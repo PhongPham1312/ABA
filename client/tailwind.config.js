@@ -7,7 +7,8 @@ module.exports = {
   theme: {
     extend: {
       width: {
-        '1028' : '1028px'
+        '70' : '70%',
+        '100' : '100%'
       },
       backgroundColor: {
         primary: "ffff",

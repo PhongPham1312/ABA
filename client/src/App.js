@@ -1,5 +1,5 @@
 import {Routes , Route} from 'react-router-dom'
-import { Home , Login } from './components/Public';
+import { Home , Login } from './containers/Public';
 import { path } from './untils/constant';
 
 function App() {
