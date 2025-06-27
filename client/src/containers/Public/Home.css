@@ -1,12 +1,39 @@
+.Home{
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+.Home-image{
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../../assets/logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.4;
+  background-size: 400px 400px;
+  z-index: -1;
+}
+
+.Home-content{
+  display: flex;
+  justify-content: center;
+}
+
 .Header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-radius: 5px;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
-    padding: 1px 10px;
+    padding: 5px 10px;
     margin: 0;
 }
+
 
 @media only screen and (max-width: 600px) {
   .Header {
@@ -16,7 +43,7 @@
 
 @media only screen and (min-width: 600px) {
  .Header {
-    width: 800%;
+    width: 80%;
   }
 }
 

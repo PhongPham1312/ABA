@@ -1,11 +1,10 @@
 import React , {useCallback} from "react";  
-import logo from '../../assets/logo.png'
 import { Button } from "../../components";
-/* import icons from "../../untils/icons" */
+import icons from "../../untils/icons"
 import {useNavigate} from 'react-router-dom'
 import {path} from '../../untils/constant'
 
-/* const {FaRegUserCircle } = icons */
+const {FaHome , FaUserCircle, IoEllipsisVerticalCircle } = icons
 
 
 const Header = () => {
@@ -14,15 +13,20 @@ const Header = () => {
         navigate(path.LOGIN)
     }, [])
     return (
-        <div className="Header w-70 ">
-            <img src={logo} alt="" className="w-[50px] h-[90%]"/>
-           <div>
+        <div className="Header w-70 p-2">
+            <div className="flex justify-center text-xs" > <FaHome className="text-base mx-1"/> TRANG CHỦ</div>
+           {/* <div>
              <Button text={'Đăng nhập'} 
              textColor='text-white' 
              bgColor='bg-blue-500' 
              onClick={goLogin} />
-           </div>
-          {/*  <FaRegUserCircle  /> */}
+           </div> */}
+          <span className=" flex justify-center">
+            <span><FaUserCircle className="text-[21px] translate-y-[2px] cursor-pointer" 
+                onClick={goLogin}/></span>
+            {/* <span>Phạm Thanh Phong !</span> */}
+            <IoEllipsisVerticalCircle className="mx-1 text-[25px] cursor-pointer"/>
+            </span>
         </div>
     )
 }   
