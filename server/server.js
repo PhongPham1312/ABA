@@ -3,6 +3,7 @@ require("dotenv").config()
 import cors from 'cors'
 
 import initRouters from "./src/routes"
+import connectDB from './src/config/connectDB'
 
 const app = express()
 app.use(cors({
@@ -14,8 +15,8 @@ app.use(cors({
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-initRouters(app)
-
+initRouters(app) // khoi tao cac route
+connectDB() // ket noi database
 const port = process.env.PORT || 8888
 
 const listiner = app.listen(port, () => {
