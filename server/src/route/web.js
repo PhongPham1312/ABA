@@ -4,9 +4,15 @@ let router = express.Router()
 
 let initwebRoutes = (app) => {
 
-    router.get('/', (req, res) => {
-        return res.send("hello phong dep trai!");
-    })
+    // user
+    router.get('/get-user-by-id', userController.getUser)
+    router.get('/get-user-all', userController.getAllUsers)
+    router.post('/create-user', userController.createUser)
+    router.put('/update-user', userController.updateUser)
+    router.delete('/delete-user', userController.deleteUser)
+    router.get('/search-user', userController.searchUsers)
+    router.put('/update-passwod-user', userController.updatePassword)
+
 
     return app.use('/', router)
 }
