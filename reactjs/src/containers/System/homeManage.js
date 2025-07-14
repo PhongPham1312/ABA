@@ -28,7 +28,7 @@ class homeManage extends Component {
                 <div className='home-container'>
                     <li onClick={() => this.gotolink('user-manage')}> <span><i className="fa fa-folder"></i>NGƯỜI DÙNG</span></li>
                     <li onClick={() => this.gotolink('kho-manage')}> <span><i className="fa fa-folder"></i>KHO HÀNG</span></li>
-                    <li> <span><i className="fa fa-folder"></i>THU CHI</span></li>
+                    <li onClick={() => this.gotolink('thuchinam')}> <span><i className="fa fa-folder"></i>THU CHI</span></li>
                     <li> <span><i className="fa fa-folder"></i>KHO HÀNG</span></li>
                 </div>
             </div>

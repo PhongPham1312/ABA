@@ -12,6 +12,7 @@ import camManage from '../containers/System/Kho/camManage';
 import suathayManage from '../containers/System/Kho/suathayManage';
 import xacManage from '../containers/System/Kho/xacManage';
 import donmay from '../containers/System/Kho/donmay';
+import ThuChiNam from '../containers/System/ThuChi/ThuChiNam';
 
 
 class System extends Component {
@@ -41,6 +42,7 @@ class System extends Component {
                         <Route path="/system/kho-sua-thay-mount/:id" component={suathayManage} />
                         <Route path="/system/kho-xac-mount/:id" component={xacManage} />
                         <Route path="/system/kho-don-mount/:id" component={donmay} />
+                        <Route path="/system/thuchinam" component={ThuChiNam} />
                         <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                     </Switch>
                 </div>

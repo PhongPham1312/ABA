@@ -9,6 +9,7 @@ import donController from "../controllers/donController"
 import customerController from "../controllers/customerController"
 import mayController from '../controllers/mayController'
 import linhkiendonController from '../controllers/linhkiendonController'
+import ASController from '../controllers/ASController'
 
 let router = express.Router();
 
@@ -64,6 +65,8 @@ let initWebRoutes = (app) => {
     router.get('/api/get-all-linhkiendon-by-donmay', linhkiendonController.getLinhkienByDonmay);
     router.delete('/api/delete-linhkiendon', linhkiendonController.deleteLinhkiendon);
 
+    // as
+    router.post('/api/create-as', ASController.handleCreateAS);
  
     return app.use("/", router);
 }
