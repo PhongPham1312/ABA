@@ -71,13 +71,23 @@ const getAlllinhkiendon = () =>{
     return axios.get('api/get-all-linhkiendon')
 }
 
-const getLinhkienByDonmay = (donId) =>{
-    return axios.get('api/get-all-linhkiendon-by-donmay')
-}
+const getLinhkienByDonmay = (donId) => {
+    return axios.get('/api/get-all-linhkiendon-by-donmay', {
+        params: { donmay: donId }
+    });
+};
+
+const deleteLinhkiendon = (donId) => {
+        console.log(donId)
+    return axios.delete('/api/delete-linhkiendon', {
+        params: { id: donId } // ⛔ Đây chỉ đúng với GET request
+    });
+};
 
 export { handleLoginApi, getAllPosition , 
     createUser , getAllUser , deleteUser, 
     getAllJob ,getAllCustomer ,getAllMay,
     createMay ,addCustomer, createDon, getAllMark, addMark,
-    createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay
+    createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
+    deleteLinhkiendon
 };

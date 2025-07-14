@@ -62,7 +62,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-linhkiendon', linhkiendonController.create);
     router.get('/api/get-all-linhkiendon', linhkiendonController.getAll);
     router.get('/api/get-all-linhkiendon-by-donmay', linhkiendonController.getLinhkienByDonmay);
-
+    router.delete('/api/delete-linhkiendon', linhkiendonController.deleteLinhkiendon);
 
  
     return app.use("/", router);

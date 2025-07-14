@@ -165,7 +165,12 @@
                             tr {
                                 .name{
                                     position: relative;
-
+                                    .linhkien {
+                                        i{
+                                            margin-left: 5px;
+                                            color: red;
+                                        }
+                                    }
                                     .listion:hover .onlistion{
                                             display: block;
                                         }

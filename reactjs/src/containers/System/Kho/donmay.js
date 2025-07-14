@@ -8,7 +8,8 @@ import ModalDon from "./ModalDon"
 import { getAllDon } from '../../../services/donService';
 import { isEmpty } from 'lodash';
 import ModalLinhkien from './modallinhkiendon';
-import { getLinhkienByDonmay } from '../../../services/userService';
+
+import Linklien from './linklien';
 
 class DonMay extends Component {
 
@@ -19,7 +20,8 @@ class DonMay extends Component {
             typemodal: '',
             listdon: [],
             modallinhkien: false,
-            linkien: false
+            reloadTrigger: 0, // giá trị số để làm trigger
+            modallinhkienid: ''
 
         }
     }
@@ -31,8 +33,21 @@ class DonMay extends Component {
         })
 
         await this.getalldon();
+
          
     }
+
+    async componentDidUpdate(prevProps, prevState) {
+        if (prevProps.reload !== this.props.reload) {
+            await this.getalldon();
+        }
+    }
+
+    triggerReload = () => {
+    this.setState((prev) => ({
+        reloadTrigger: prev.reloadTrigger + 1
+    }));
+}
 
     // get all dọn may
     getalldon = async() => {
@@ -81,9 +96,10 @@ class DonMay extends Component {
     formatNumber = (value) => {return value.replace(/\D/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ' ');};
 
     // modal option
-    onlinhkien = () =>{
+    onlinhkien = (type) =>{
         this.setState ({
-            linkien: !this.state.linkien
+            linkien: !this.state.linkien,
+            modallinhkienid: type
         })
     }
     
@@ -148,11 +164,14 @@ class DonMay extends Component {
                                                     <tbody>
                                                         <tr>
                                                             <td className='name'>
-                                                                {item.name} _ {item.somay !== null ? item.somay : "..."} _ {item.seri !== null ? item.seri : "..."}
-                                                                <div className='tool'><i class="fa-solid fa-pen-to-square"></i></div>
+                                                                {item.name} _ {item.somay !== null ? item.somay : "..."} _ {item.seri !== null ? item.seri : "..."} <i class="fa-solid fa-pen-to-square"></i>
                                                             </td>
                                                             <td rowspan="3" className='name'>
                                                                 <li>- Thu : - {this.formatNumber(item?.gia)} ( {item?.hinhthucthuloai} : {item?.hinhthucthungay} )</li>
+                                                                <li><Linklien 
+                                                                    donmay={item.id}
+                                                                    reload={this.state.reloadTrigger}
+                                                                /></li>
                                                                 {/* <li>- Thu đổi iphone 13 Pro Max</li> */}
                                                                 {/* <li>- linh kiện : 
                                                                     <li> + màn : 200 000 ( AS : 11.7 )</li>
@@ -161,7 +180,7 @@ class DonMay extends Component {
                                                                 <li>- SỈ DẮT MỐI : 1 000 000 ( AS : 10.7 )</li> */}
                                                                 <div className='listion'>- <i class="fa-regular fa-square-plus " ></i>
                                                                     <ul className='onlistion'>
-                                                                        <li onClick={this.onlinhkien}>- mua linh kiện</li>
+                                                                        <li onClick={() => this.onlinhkien(item.id)}>- mua linh kiện</li>
                                                                         <li>- icloud</li>
                                                                         <li>- sỉ dắt mối</li>
                                                                     </ul>
@@ -197,9 +216,10 @@ class DonMay extends Component {
 
                                {this.state.linkien === true && 
                                 <ModalLinhkien 
-                                id = {this.props.match?.params?.id}
-                                onlinhkien = {this.onlinhkien}
-                                getalldon = {this.getalldon}
+                                    id = {this.state.modallinhkienid}
+                                    onlinhkien = {this.onlinhkien}
+                                    getalldon = {this.getalldon}
+                                    triggerReload={this.triggerReload} // 👈 truyền callback
                                 />
                                 }
 

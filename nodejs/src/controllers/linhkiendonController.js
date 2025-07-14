@@ -18,8 +18,23 @@ const getLinhkienByDonmay = async (req, res) => {
   return res.status(200).json(response);
 };
 
+const deleteLinhkiendon = async (req, res) => {
+    const id = req.query.id;
+    console.log(id)
+    if (!id) {
+        return res.status(400).json({
+            errCode: 1,
+            errMessage: 'Thiếu ID để xóa!'
+        });
+    }
+
+    const result = await linhkienService.deleteLinhkiendon(id);
+    return res.status(200).json(result);
+};
+
 module.exports = {
   create: create,
 getAll: getAll,
-getLinhkienByDonmay: getLinhkienByDonmay
+getLinhkienByDonmay: getLinhkienByDonmay,
+deleteLinhkiendon: deleteLinhkiendon
 }

@@ -84,9 +84,40 @@ const getAllLinhkienByDonmay = async (donmayId) => {
   }
 };
 
+const deleteLinhkiendon = async (id) => {
+    try {
+        const linhkien = await db.Linhkiendon.findOne({
+            where: { id: id }
+        });
+
+        if (!linhkien) {
+            return {
+                errCode: 1,
+                errMessage: 'Linh kiện không tồn tại!'
+            };
+        }
+
+        await db.Linhkiendon.destroy({
+            where: { id: id }
+        });
+
+        return {
+            errCode: 0,
+            message: 'Xóa thành công!'
+        };
+    } catch (e) {
+        console.error(e);
+        return {
+            errCode: -1,
+            errMessage: 'Lỗi từ server!'
+        };
+    }
+};
+
 
 module.exports = {
   getAllLinhKienDon: getAllLinhKienDon,
   createLinhKienDon : createLinhKienDon,
-  getAllLinhkienByDonmay: getAllLinhkienByDonmay
+  getAllLinhkienByDonmay: getAllLinhkienByDonmay,
+  deleteLinhkiendon: deleteLinhkiendon
 }

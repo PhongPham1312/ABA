@@ -80,7 +80,7 @@ class ModalLinhkiendon extends Component {
             let res = await createlinhkiendon({
                 donmay: this.state.donmay,
                 linhkien: this.state.linhkien,
-                linhkiengia: this.removeSpaces(this.linhkiengia),
+                linhkiengia: this.removeSpaces(this.state.linhkiengia),
                 linhkienuser: this.state.linhkienuser,
                 loaitien: this.state.selectedHinhthuc.label,
                 linhkienngay: this.state.linhkienngay
@@ -90,6 +90,7 @@ class ModalLinhkiendon extends Component {
                 toast.success('cập nhật linh kiện thành công')
                 await this.props.getalldon();
                 this.props.onlinhkien()
+                this.props.triggerReload(); // 👈 gọi để ép Linklien cập nhật
             }
         }
     }
@@ -117,7 +118,7 @@ class ModalLinhkiendon extends Component {
                     <input type='text' name="linhkien"
                         value={this.state.linhkien}
                         onChange={this.handleInputChange}
-                        placeholder='nhập tên linh kiện!'/>
+                        placeholder='tên linh kiện'/>
                 </div>
 
                 <div className='modal-input-form'>
@@ -125,7 +126,7 @@ class ModalLinhkiendon extends Component {
                     <input type='text' name="linhkiengia"
                         value={this.formatNumber(this.state.linhkiengia)}
                         onChange={this.handleInputChange}
-                        placeholder='nhập tên linh kiện!'/>
+                        placeholder='tên linh kiện'/>
                 </div>
 
                 <div className='modal-input-form'>
@@ -134,7 +135,7 @@ class ModalLinhkiendon extends Component {
                         options={this.state.listhinhthuc}
                         value={this.state.selectedHinhthuc}
                         onChange={(selected) => this.setState({ selectedHinhthuc: selected })}
-                        placeholder="Chọn hình thức"
+                        placeholder="chọn hình thức thanh toán"
                     />
                 </div>
 
@@ -143,7 +144,7 @@ class ModalLinhkiendon extends Component {
                     <input type='text' name="linhkienuser"
                         value={this.state.linhkienuser}
                         onChange={this.handleInputChange}
-                        placeholder='người nhận nếu có'/>
+                        placeholder='người nhận ( nếu có )'/>
                 </div>
 
                 {/* btn  */}
