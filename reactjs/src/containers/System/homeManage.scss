@@ -1,0 +1,32 @@
+.home-container{
+    width: 70%;
+    max-height: 93vh; // hoặc giá trị cố định như 500px
+    overflow-y: auto;
+    li{
+        list-style: none;
+        cursor: pointer;
+        padding: 10px;
+        box-shadow: rgba(17, 17, 26, 0.05) 0px 1px 0px, rgba(17, 17, 26, 0.1) 0px 0px 8px;
+        &:hover{
+            background-color: #E0FFFF;
+        }
+
+        &:hover span{
+            left: 5px;
+        }
+        span{
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            left: 0;
+            transition: left 0.2s linear;
+            position: relative; // hoặc absolute
+            i{
+            color: #fdf003;
+            font-size: 30px;
+            margin-right: 5px;
+            font-weight: bold;
+        }
+        }
+    }
+}

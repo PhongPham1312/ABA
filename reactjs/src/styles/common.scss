@@ -1,0 +1,96 @@
+@import "variables";
+
+.text-center {
+    text-align: center !important;
+}
+
+.text-left {
+    text-align: left !important;
+}
+
+.text-right {
+    text-align: right !important;
+}
+
+.text-red {
+    color: $common-red !important;
+}
+
+.flex{
+    display: flex;
+}
+
+.w70 {
+    width: 70%;
+}
+
+.text-black{
+    color: #000000;
+}
+
+.flex-column{
+    flex-direction: column;
+}
+
+.f-14px{
+    font-size: 14px;
+    padding: 5px;
+    padding-bottom: 0;
+}
+
+/* mobile */
+@media (max-width: 768px) {
+    .modal-donmay{
+        .modal-donmay-content{
+            .list-input{
+
+                .ngaydon{
+                    width: 100%;
+                }
+            }
+        }
+    }
+  .header-content{
+    width: 100%;
+  }
+  .home-container{
+    width: 100%;
+  }
+  .user-container-ss2{
+    width: 100%;
+    .modal-user{
+        width: 100%;
+        .modal-user-container{
+            width: 100%;
+            .modal-content{
+                width: 98%;
+            }
+        }
+    }
+
+    .Modal {
+        .modal-container{
+             width : 95%;
+        }
+    }
+    
+  }
+  .user-container-ss{
+    .form-info{
+        flex-direction: column;
+    }
+    
+  }
+  
+}
+
+
+/* Tablet */
+@media (min-width: 768px) {
+  
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  
+}
