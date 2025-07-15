@@ -8,6 +8,7 @@ import ModalDon from "./ModalDon"
 import { getAllDon } from '../../../services/donService';
 import { isEmpty } from 'lodash';
 import ModalLinhkien from './modallinhkiendon';
+import CommonUtils from '../../../utils/CommonUtils';
 
 import Linklien from './linklien';
 
@@ -167,7 +168,9 @@ class DonMay extends Component {
                                                                 {item.name} _ {item.somay !== null ? item.somay : "..."} _ {item.seri !== null ? item.seri : "..."} <i class="fa-solid fa-pen-to-square"></i>
                                                             </td>
                                                             <td rowspan="3" className='name'>
-                                                                <li>- Thu : - {this.formatNumber(item?.gia)} <span className='text-name'>( {item?.hinhthucthuloai} : {item?.hinhthucthungay} )</span></li>
+                                                                <li>- Thu : - {this.formatNumber(item?.gia)} <span 
+                                                                onClick={() => this.gotolink(`thuchi/as/THU%20CHI%20THÁNG%20${CommonUtils.getCurrentMonth()}#tm-${item.ngaymua}-${item.name} _ ${item.somay !== null ? item.somay : "..."} _ ${item.seri !== null ? item.seri : "..."}`)}
+                                                                 className='text-name'>( {item?.hinhthucthuloai} : {item?.hinhthucthungay} )</span></li>
                                                                 <li><Linklien 
                                                                     donmay={item.id}
                                                                     reload={this.state.reloadTrigger}

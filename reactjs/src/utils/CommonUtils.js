@@ -14,6 +14,17 @@ class CommonUtils {
         })
     }
 
+    // get tháng
+    static getCurrentMonth = () => {
+        const today = new Date();
+        return today.getMonth() + 1; // Tháng trong JS tính từ 0 đến 11 nên +1
+    };
+
+    // kiểm tra chuổi
+    static kiemTraChuoi = (chuoiCha, chuoiCon) => {
+        return chuoiCha.includes(chuoiCon);
+    };
+
 }
 
 export default CommonUtils;

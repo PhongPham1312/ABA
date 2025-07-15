@@ -122,8 +122,8 @@ class ThuChiTM extends Component {
                      {/* list user option */}
                     <div className='user-container kho-container'>
                         <ul>
-                            <li onClick={this.onAS} className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
-                            <li onClick={this.onTM} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
+                            <li  onClick={() => this.gotolink(`thuchi/as/${this.props.match?.params?.id}`)} className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
+                            <li  className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
                         </ul>
                     </div>
 

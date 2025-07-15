@@ -6,7 +6,7 @@ const createAS = async (data) => {
         const { content, money, ngay, type , link} = data;
 
         // Kiểm tra dữ liệu đầu vào
-        if (!content || !money || !ngay || !type  || !link) {
+        if (!content || !money || !ngay ) {
             return {
                 errCode: 1,
                 errMessage: 'Thiếu thông tin bắt buộc!'
@@ -81,8 +81,45 @@ const getSacombankByMonthGrouped = async (month) => {
   }
 };
 
+const deleteAS = async (id) => {
+  try {
+    if (!id) {
+      return {
+        errCode: 1,
+        message: 'Thiếu ID để xóa'
+      };
+    }
+
+    // Tìm bản ghi
+    const record = await db.Sacombank.findOne({ where: { id } });
+
+    if (!record) {
+      return {
+        errCode: 2,
+        message: 'Không tìm thấy bản ghi'
+      };
+    }
+
+    // Xóa bản ghi
+    await db.Sacombank.destroy({ where: { id } });
+
+    return {
+      errCode: 0,
+      message: 'Xóa thành công'
+    };
+
+  } catch (error) {
+    console.error('Lỗi khi xóa bản ghi AS:', error);
+    return {
+      errCode: -1,
+      message: 'Lỗi phía server'
+    };
+  }
+};
+
 
 module.exports = {
     createAS: createAS,
-    getSacombankByMonthGrouped: getSacombankByMonthGrouped
+    getSacombankByMonthGrouped: getSacombankByMonthGrouped,
+    deleteAS:deleteAS,
 }

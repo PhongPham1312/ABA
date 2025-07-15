@@ -3,11 +3,10 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import { listnamelink } from '../../../utils/constant';
-import Modalthuchi from './THUCHINAM/Modalthuchinam';
-import { getAllthuchinam ,deletethuchi } from '../../../services/thuchinam';
-import {getSacombankByMonthGrouped} from  '../../../services/userService'
-import { isEmpty } from 'lodash';
+import {getSacombankByMonthGrouped,  deleteAS} from  '../../../services/userService'
 import { toast } from 'react-toastify';
+import Modalthuchi from './THUCHINAM/modalthuchi';
+import CommonUtils from '../../../utils/CommonUtils';
 
 class ThuChi extends Component {
 
@@ -26,21 +25,16 @@ class ThuChi extends Component {
         this.setState({
             linkName: this.timTenTheoLink()
         })
-        let thang = this.getCurrentMonth()
+        let thang = CommonUtils.getCurrentMonth()
         this.setState({
             thang: thang
         })
-        await this.getallthuchi(thang)
+        await this.getallthuchi()
     }
 
-    getCurrentMonth = () => {
-        const today = new Date();
-        return today.getMonth() + 1; // Tháng trong JS tính từ 0 đến 11 nên +1
-    };
-
-    getallthuchi = async (thang) => {
+    getallthuchi = async () => {
+        let thang = CommonUtils.getCurrentMonth()
        let res = await getSacombankByMonthGrouped(thang);
-            console.log(res)
             if(res && res.errCode === 0){
                 this.setState({
                     listthuchi: res.data
@@ -51,14 +45,6 @@ class ThuChi extends Component {
             listthuchi: []})
     }
 
-    deletethuchi = async(id) => {
-        let res = await deletethuchi(id);
-       if(res && res.errCode === 0){
-            toast.success('xóa thành công')
-            await this.getallthuchi()
-        }
-        else toast.error("xóa thất bại")
-    }
 
     onModalthuchi = (type) => {
         this.setState({
@@ -68,10 +54,10 @@ class ThuChi extends Component {
     }
 
     // tìm namelink theo link
-        timTenTheoLink = () => {
-            const item = listnamelink.find(item => item.link === this.props.match?.path);
+    timTenTheoLink = () => {
+        const item = listnamelink.find(item => item.link === this.props.match?.path);
                 return item ? item.name : null;
-        };
+    };
 
      gotolink = (link) =>
     {
@@ -82,22 +68,12 @@ class ThuChi extends Component {
     }
 
     
-    // kieem tra url
-    kiemTraChuoi = (chuoiCha, chuoiCon) => {
-        return chuoiCha.includes(chuoiCon);
-    };
-
-    // kieem tra url
-    kiemTraChuoi = (chuoiCha, chuoiCon) => {
-        return chuoiCha.includes(chuoiCon);
-    };
-
     // định dạng giá tiền
     formatNumber = (value) => {
         if (!value) return '';
 
         // Giữ dấu trừ nếu có
-        const isNegative = value.trim().startsWith('-');
+        const isNegative = value.trim().startsWith('- ');
         
         // Loại bỏ tất cả ký tự không phải số
         let cleaned = value.replace(/\D/g, '');
@@ -111,10 +87,22 @@ class ThuChi extends Component {
         return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     };
 
+    deleteSacombank = async (id) => {
+
+        let res = await deleteAS(id)
+        if(res?.errCode === 0){
+            toast.success('xóa thành công')
+            await this.getallthuchi()
+        }
+        else {
+            toast.error('xóa không thành công')
+        }
+    }
+
 
     render() {
         let {listthuchi } = this.state
-        console.log(this.props.match.path)
+        console.log(this.props.match)
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
@@ -122,47 +110,37 @@ class ThuChi extends Component {
                      {/* list user option */}
                     <div className='user-container kho-container'>
                         <ul>
-                            <li onClick={this.onAS} className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
-                            <li onClick={this.onTM} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
+                            <li className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
+                            <li onClick={() => this.gotolink(`thuchi/tm/${this.props.match?.params?.id}`)} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
                         </ul>
                     </div>
 
                      {/* link name */}
                         <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`kho-manage-month/${this.props.match.params?.id}`)}
+                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchinam`)}
                             ></i> {this.state.linkName}  {this.props.match?.params?.id}
                             </div>
                     
                     {/* list kho */}
                     <div className='list-user'>
                         <div>
-                            <button className="btn-add-user" onClick={() => this.onModalthuchi('THÊM THU CHI NĂM')}>
+                            <button className="btn-add-user" onClick={() => this.onModalthuchi('THÊM THU CHI')}>
                                 <i className="fas fa-plus"></i> 
                             </button>
                         </div>
 
                         <div className='list-kho list-thuchi'>
 
-
-                            {/* list */}
-                            {/* {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
-                                return (
-                                    <li onClick={() => this.gotolink(`thuchithang/${item.id}`)}
-                                     className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
-                                    onClick={()=> this.deletethuchi(item.id)}
-                                     class="fa-solid fa-circle-xmark"></i></li>
-                                )
-                            })} */}
-
                             <div>
                                 {Object.entries(listthuchi).map(([ngay, items]) => (
                                     <div key={ngay} className="ngay-group">
-                                    <h5>{ngay}.{this.state.thang}</h5>
+                                    <h5 className='m-0 mt-2'>{ngay}.{this.state.thang}</h5>
                                     <ul>
                                         {items.map((item, idx) => (
-                                        <li className='thuchi-content' key={item.id || idx}>
+                                        <li className='thuchi-content' id={`tm-${ngay}.${this.state.thang}-${item.content}`} key={item.id || idx}>
                                             <div className='money'>{this.formatNumber(item.money)}</div>
                                             <div onClick={() => this.gotolink(item.link)} className={item.link !== null ? 'link' : ''}>{item.content}</div>
+                                            <i class="fa-solid fa-circle-xmark"></i>
                                         </li>
                                         ))}
                                     </ul>

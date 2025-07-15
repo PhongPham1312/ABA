@@ -98,11 +98,18 @@ const deleteLinhkiendon = (donId) => {
     });
 };
 
+const deleteAS = (donId) => {
+        console.log(donId)
+    return axios.delete('/api/delete-as', {
+        params: { id: donId } // ⛔ Đây chỉ đúng với GET request
+    });
+};
+
 export { handleLoginApi, getAllPosition , 
     createUser , getAllUser , deleteUser, 
     getAllJob ,getAllCustomer ,getAllMay,
     createMay ,addCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
     deleteLinhkiendon, handleCreateAS, handleCreateTM, 
-    getSacombankByMonthGrouped
+    getSacombankByMonthGrouped , deleteAS
 };

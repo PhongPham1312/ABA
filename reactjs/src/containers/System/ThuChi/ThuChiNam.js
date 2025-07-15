@@ -86,7 +86,7 @@ class ThuChiNam extends Component {
 
                      {/* link name */}
                         <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`kho-manage-month/${this.props.match.params?.id}`)}
+                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`home/${this.props.match.params?.id}`)}
                             ></i> {this.state.linkName}  {this.props.match?.params?.id}
                             </div>
                     

@@ -15,7 +15,7 @@ import donmay from '../containers/System/Kho/donmay';
 import ThuChiNam from '../containers/System/ThuChi/ThuChiNam';
 import Thuchithang from '../containers/System/ThuChi/Thuchithang';
 import Thuchi from '../containers/System/ThuChi/Thuchi';
-
+import ThuchiTM from '../containers/System/ThuChi/ThuchiTM';
 
 class System extends Component {
     render() {
@@ -47,6 +47,7 @@ class System extends Component {
                         <Route path="/system/thuchinam" component={ThuChiNam} />
                         <Route path="/system/thuchithang/:id" component={Thuchithang} />
                         <Route path="/system/thuchi/as/:id" component={Thuchi} /> {/* home */}
+                        <Route path="/system/thuchi/tm/:id" component={ThuchiTM} /> {/* home */}
                         <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                     </Switch>
                 </div>

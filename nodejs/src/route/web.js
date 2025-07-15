@@ -71,6 +71,7 @@ let initWebRoutes = (app) => {
     // as
     router.post('/api/create-as', ASController.handleCreateAS);
     router.get('/api/get-all-by-thang', ASController.getSacombankByMonthGrouped);
+    router.delete('/api/delete-as', ASController.deleteAS);
 
     // tm
     router.post('/api/create-tm', tmController.handleCreateTM);

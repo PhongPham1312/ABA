@@ -86,7 +86,7 @@ class Thuchithang extends Component {
                 
                      {/* link name */}
                         <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchithang/${this.props.match.params?.id}`)}
+                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchinam`)}
                             ></i> {this.state.linkName}
                             </div>
                     

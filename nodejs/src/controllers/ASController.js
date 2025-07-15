@@ -10,8 +10,14 @@ const getSacombankByMonthGrouped = async (req, res) => {
     return res.status(200).json(result);
 };
 
+const deleteAS = async (req, res) => {
+    const result = await asService.deleteAS(req.query.id);
+    return res.status(200).json(result);
+};
+
 module.exports = {
     handleCreateAS :handleCreateAS,
-    getSacombankByMonthGrouped: getSacombankByMonthGrouped
+    getSacombankByMonthGrouped: getSacombankByMonthGrouped,
+    deleteAS: deleteAS
 }
 
