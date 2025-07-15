@@ -43,7 +43,6 @@
 .header-thuchi{
     display: flex;
     justify-content: space-between;
-    padding: 0 15px;
 
     .btn-add-user{
         i{
@@ -56,6 +55,73 @@
 
             &:hover {
                 background-color: blue;
+            }
+        }
+    }
+}
+
+
+.list-file{
+    ul{
+        padding: 0;
+        margin: 0;
+        padding: 5px;
+        
+        li{
+            padding: 10px 5px;
+            box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            
+
+            i{
+                color: gold;
+                font-size: 20px;
+                margin-right: 5px;
+            }
+        }
+    }
+}
+
+.modal-thuchi{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    .modal-thuchi-container{
+        width: 98%;
+        background-color: white;
+        padding: 0 10px;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+
+        .close {
+            width: 100%;
+            padding: 10px;
+            padding-bottom: 0;
+            display: flex;
+            justify-content: right;
+            font-size: 16px;
+        }
+        .header{
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .modal-thuchi-form{
+            display: flex;
+            border: 1px solid yellow;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            label{
+                background-color: yellow;
+                font-weight: bold;
+                padding: 5px ;
+            }
+
+            input{
+                padding: 0 10px;
+                flex: 1;
             }
         }
     }

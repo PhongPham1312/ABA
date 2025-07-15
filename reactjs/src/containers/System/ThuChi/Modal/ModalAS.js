@@ -42,7 +42,40 @@ class ModalAS extends Component {
     render() {
         return (
             <div className="modal-thuchi">
-                DDQ
+                <div className='modal-thuchi-container'>
+                    {/* header */}
+                    <div className='close'><i class="fa-solid fa-circle-xmark"></i></div>
+                    <div className='header'>{this.props.typeModal}</div>
+
+                    {/* content */}
+                    <div className='modal-thuchi-form'>
+                        <label>ngày</label>
+                        <input type='text' name="ngày"
+                            value={this.state.ngay}
+                            onKeyDown={this.handleEnterPress}
+                            onChange={this.handleInputChange}
+                            placeholder='nhập ngày'/>
+                    </div>
+
+                    <div className='modal-thuchi-form'>
+                        <label>nội dung</label>
+                        <input type='text' name="content"
+                            value={this.state.content}
+                            onKeyDown={this.handleEnterPress}
+                            onChange={this.handleInputChange}
+                            placeholder='nội dung thu chi   '/>
+                    </div>
+
+                    <div className='modal-thuchi-form'>
+                        <label>thu chi</label>
+                        <input type='text' name="money"
+                            value={this.state.money}
+                            onKeyDown={this.handleEnterPress}
+                            onChange={this.handleInputChange}
+                            placeholder='thu chi   '/>
+                    </div>
+
+                </div>
                 
             </div>
         );

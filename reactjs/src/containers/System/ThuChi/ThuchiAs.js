@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import CommonUtils from '../../../utils/CommonUtils';
+import ModalAS from './Modal/ModalAS';
 
 class ThuChiAs extends Component {
 
@@ -10,6 +11,8 @@ class ThuChiAs extends Component {
         super(props);
         this.state = {
             thang:  '',
+            onModalAS: false,
+            typeModal: ""
         }
     }   
 
@@ -54,36 +57,37 @@ class ThuChiAs extends Component {
         return (num < 0 ? '- ' : '+ ') + formatted;
     };
 
+    onmodalas = (type) => {
+        this.setState({
+            onModalAS : !this.state.onModalAS,
+            typeModal: type
+        })
+    }
 
     
     render() {
-        let {listthuchi } = this.state
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
 
-                     {/* list user option */}
-                    <div className='user-container kho-container'>
-                        <ul>
-                            <li className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
-                            <li onClick={() => this.gotolink(`thuchi-tm`)} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
-                        </ul>
-                    </div>
-
                      {/* link name */}
-                        <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`home`)}
-                            ></i> THU CHI AS THÁNG {this.state.thang}
+                        <div className='m-2 header-thuchi'>
+                            <span><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchi`)}></i> THU CHI AS THÁNG {this.state.thang}</span>
+                            <button className="btn-add-user" onClick={() => this.onmodalas('THÊM THU CHI')}><i className="fas fa-plus"></i> </button>
                             </div>
                     
                     {/* list kho */}
                     <div className='list-user'>
-                        <button className="btn-add-user" onClick={() => this.onModalthuchi('THÊM THU CHI')}>
-                                <i className="fas fa-plus"></i> 
-                            </button>
+                        
 
-                        <div className='list-kho list-thuchi'>
-                        </div>
+                        {/* Modal */}
+                        {this.state.onModalAS === true &&
+                            <ModalAS 
+                                typeModal = {this.state.typeModal}
+                                onModalAS = {this.onmodalas}
+                            />
+                        }
+
                     </div>
                 </div>
                 

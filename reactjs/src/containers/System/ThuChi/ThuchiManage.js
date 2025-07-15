@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import CommonUtils from '../../../utils/CommonUtils';
-import ModalAS from './Modal/ModalAS';
 
 class ThuChi extends Component {
 
@@ -70,12 +69,6 @@ class ThuChi extends Component {
         })
     }
 
-    onmodalas = () => {
-        this.setState({
-            onModalAS : !this.state.onModalAS
-        })
-    }
-
     
     render() {
         return (
@@ -85,7 +78,7 @@ class ThuChi extends Component {
                     {/* list năm */}
                     <div className='list-thuchi-folder'>
                         <div className='folder'><span>Thư mục</span> 
-                        {this.state.onListnam === false ?
+                        {this.state.onListnam === true ?
                             <i class="fa-solid fa-arrow-down" onClick={this.onlistnam}></i> : 
                             <i class="fa-solid fa-arrow-right" onClick={this.onlistnam}></i>}
                         </div>
@@ -93,7 +86,7 @@ class ThuChi extends Component {
                          <ul className='list-fold'>
                             <li>
                                 <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span>
-                                 {this.state.onListnam === false ?
+                                 {this.state.onListthang === true ?
                                 <i class="fa-solid fa-arrow-down" onClick={this.onlistthang}></i> : 
                                 <i class="fa-solid fa-arrow-right" onClick={this.onlistthang}></i>} </div>
                                 
@@ -132,8 +125,13 @@ class ThuChi extends Component {
                         </div>
                     
                     {/* list kho */}
-                    <div className='list-user'>
-                        
+                    <div className='list-user list-file'>
+                        <ul>
+                            <li> <span><i class="fa-solid fa-file-import"></i> THU CHI TM THÁNG {this.state.thang}</span></li>
+                            <li onClick={() => this.gotolink(`thuchi-as`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI AS THÁNG {this.state.thang}</span></li>
+                            <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG PART TIME THÁNG {this.state.thang}</span></li>
+                            <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG FULL TIME THÁNG {this.state.thang}</span></li>
+                        </ul>
                     </div>
 
                 </div>
