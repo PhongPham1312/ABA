@@ -1,0 +1,113 @@
+.list-kho{
+    &.list-thuchi{
+        position: relative;
+    }
+
+    .thuchi-item{
+        list-style: none;
+        padding: 5px 0;
+
+        &:hover {
+            background-color: #E0FFFF;
+        }
+
+        
+        &:hover span {
+            left: 5px;
+        }
+
+        display: flex;
+            justify-content: space-between;
+        cursor: pointer;
+
+        &:hover i.fa-circle-xmark{
+            display: block;
+        }
+        i.fa-circle-xmark{
+            color: red;
+            font-size: 16px;
+            padding: 5px;
+            display: none;
+        }
+        
+        span{
+            font-size: 16px;
+            margin: 0;
+            position: relative;
+            left: 0;
+            transition: left 0.2 linear;
+            
+
+            i{
+                font-size: 30px;
+                color: yellow;
+                margin-right: 10px;
+            }
+        }
+    }
+    .Modalthuchinam{
+        position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+
+        .Modalthuchinam-content{
+            width: 98%;
+            box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
+            padding: 0 10px;
+            background-color: white;
+            .close {
+                display: flex;
+                justify-content: right;
+                font-size: 16px;
+                color: red;
+                padding-right: 5px;
+                padding-top: 5px;
+            }
+
+            .heading{
+                font-size: 25px;
+                font-weight: bold;
+                text-align: center;
+                padding-bottom: 10px;
+            }
+            
+            .modal-input-form{
+                display: flex;
+                border: 1px solid yellow;
+                border-radius: 5px;
+                label{
+                    font-size: 16px;
+                    background-color: yellow;
+                    font-weight: bold;
+                    padding: 5px 10px;
+                }
+
+                input{
+                    font-size: 16px;
+                    padding-left: 10px;
+                    flex: 1;
+                    outline: none;
+                }
+            }
+            
+            button{
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 20px;
+                padding-bottom: 15px;
+                .add{
+                    font-size: 16px;
+                    font-weight: bold;
+                    background-color: rgba(0, 0, 255,0.8);
+                    color: white;
+                    padding: 5px 10px;
+                    border-radius: 5px;
+
+                }
+            }
+        }
+    }
+}

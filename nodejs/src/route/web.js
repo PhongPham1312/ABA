@@ -10,6 +10,8 @@ import customerController from "../controllers/customerController"
 import mayController from '../controllers/mayController'
 import linhkiendonController from '../controllers/linhkiendonController'
 import ASController from '../controllers/ASController'
+import tmController from '../controllers/tmController'
+import thuchinam from '../controllers/thuchinam'
 
 let router = express.Router();
 
@@ -67,6 +69,13 @@ let initWebRoutes = (app) => {
 
     // as
     router.post('/api/create-as', ASController.handleCreateAS);
+    // tm
+    router.post('/api/create-tm', tmController.handleCreateTM);
+
+    // thuchinăm
+    router.post('/api/create-thuchinam', thuchinam.createthuchi);
+    router.get('/api/get-all-thuchinam', thuchinam.getAll);
+    router.delete('/api/delete-thuchinam', thuchinam.deletethuchi);
  
     return app.use("/", router);
 }

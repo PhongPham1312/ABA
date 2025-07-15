@@ -1,12 +1,11 @@
-import { DATE } from 'sequelize';
 import db from '../models';
 
-const createAS = async (data) => {
+const createTM = async (data) => {
     try {
         const { content, money, ngay, type , link} = data;
 
         // Kiểm tra dữ liệu đầu vào
-        if (!content || !money || !ngay || !type  || !link) {
+        if (!content || !money || !ngay || !type) {
             return {
                 errCode: 1,
                 errMessage: 'Thiếu thông tin bắt buộc!'
@@ -14,7 +13,7 @@ const createAS = async (data) => {
         }
 
         // Tạo bản ghi mới
-        await db.Sacombank.create({
+        await db.Tienmat.create({
             content,
             money,
             ngay,
@@ -37,5 +36,5 @@ const createAS = async (data) => {
 };
 
 module.exports = {
-    createAS: createAS
+    createTM: createTM
 }

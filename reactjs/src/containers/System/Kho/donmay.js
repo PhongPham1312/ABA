@@ -149,7 +149,7 @@ class DonMay extends Component {
 
                                 {listdon && !isEmpty(listdon)  && listdon.map((item, index) => {
                                     return (
-                                         <li className='list-kho-li' id={index}>
+                                         <li className='list-kho-li' id={`don-${item.ngaymua}-${item.hinhthucthuloai}-${item.nguoiban}-${item.dienthoai}-${item.gia}`}>
                                             {/* name - phone */}
                                             <div className='name-phone'>
                                                 

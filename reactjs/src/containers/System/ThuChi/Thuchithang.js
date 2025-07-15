@@ -8,7 +8,7 @@ import { getAllthuchinam ,deletethuchi } from '../../../services/thuchinam';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 
-class ThuChiNam extends Component {
+class Thuchithang extends Component {
 
     constructor(props){
         super(props);
@@ -24,12 +24,12 @@ class ThuChiNam extends Component {
         this.setState({
             linkName: this.timTenTheoLink()
         })
-        await this.getallthuchi()
+        /* await this.getallthuchi() */
          
     }
 
-    getallthuchi = async () => {
-        let res = await getAllthuchinam();
+    /* getallthuchi = async () => {
+        let res = await getAllThuchithang();
         if(res && res.errCode === 0){
             this.setState({
                 listthuchi: res.data
@@ -39,7 +39,7 @@ class ThuChiNam extends Component {
             this.setState({
         listthuchi: []})
     }
-
+ */
     deletethuchi = async(id) => {
         let res = await deletethuchi(id);
        if(res && res.errCode === 0){
@@ -58,6 +58,7 @@ class ThuChiNam extends Component {
 
     // tìm namelink theo link
         timTenTheoLink = () => {
+            console.log( this.props.match?.path)
             const item = listnamelink.find(item => item.link === this.props.match?.path);
                 return item ? item.name : null;
         };
@@ -86,14 +87,14 @@ class ThuChiNam extends Component {
 
                      {/* link name */}
                         <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`kho-manage-month/${this.props.match.params?.id}`)}
-                            ></i> {this.state.linkName}  {this.props.match?.params?.id}
+                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchinam/${this.props.match.params?.id}`)}
+                            ></i> {this.state.linkName}
                             </div>
                     
                     {/* list kho */}
                     <div className='list-user'>
                         <div>
-                            <button className="btn-add-user" onClick={() => this.onModalthuchi('THÊM THU CHI NĂM')}>
+                            <button className="btn-add-user" onClick={() => this.onModalthuchi('THÊM THU CHI THÁNG')}>
                                 <i className="fas fa-plus"></i> 
                             </button>
                         </div>
@@ -102,10 +103,9 @@ class ThuChiNam extends Component {
 
 
                             {/* list */}
-                            {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
+                           {/*  {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
                                 return (
-                                    <li onClick={() => this.gotolink(`thuchithang/:${item.id}`)}
-                                     className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
+                                    <li className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
                                     onClick={()=> this.deletethuchi(item.id)}
                                      class="fa-solid fa-circle-xmark"></i></li>
                                 )
@@ -118,7 +118,7 @@ class ThuChiNam extends Component {
                                 onModal = {this.onModalthuchi} 
                                 getallthuchi = {this.getallthuchi}
                                 />
-                            }
+                            } */}
                         </div>
                     </div>
                 </div>
@@ -139,4 +139,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThuChiNam));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Thuchithang));

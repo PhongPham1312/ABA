@@ -44,6 +44,14 @@ const createMay = (data) => {
     return axios.post(`/api/create-gia`, data);
 }
 
+const handleCreateAS = (data) => {
+    return axios.post(`/api/create-as`, data);
+}
+
+const handleCreateTM = (data) => {
+    return axios.post(`/api/create-tm`, data);
+}
+
 const addMark = (data) => {
     return axios.post(`/api/create-mark`, data);
 }
@@ -89,5 +97,5 @@ export { handleLoginApi, getAllPosition ,
     getAllJob ,getAllCustomer ,getAllMay,
     createMay ,addCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
-    deleteLinhkiendon
+    deleteLinhkiendon, handleCreateAS, handleCreateTM
 };

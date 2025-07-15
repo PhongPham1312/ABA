@@ -5,7 +5,7 @@ import './Khomanage.scss'
 import { toast } from 'react-toastify';
 import { createDon } from '../../../services/donService';
 import { getAllCustomer , getAllMay , addCustomer, getAllUser,
-     createMay} from '../../../services/userService';
+     createMay , handleCreateAS, handleCreateTM} from '../../../services/userService';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
@@ -137,6 +137,26 @@ class ModalDon extends Component {
                 if (!isMayExist && maynew) await createMay({ name: maynew });
                 if (!isCustomerExist && dienthoai) await addCustomer({ name: newnguoiban, 
                     phone: dienthoai });
+                }
+                if(loaithutien === 'AS'){
+                    let res2 = await handleCreateAS({
+                        content : `thu 1P _ ${newnguoiban} _ ${dienthoai} _ ${maynew} _ ${somay} _ ${seri}`,
+                        money: gia,
+                        ngay: ngaymua,
+                        type: 1,
+                        link: `http://localhost:3000/system/kho-don-mount/2#don-${ngaymua}-${loaithutien}-${newnguoiban}-${dienthoai}`
+                    })
+                }
+
+                if(loaithutien === 'TM'){
+                    let res2 = await handleCreateTM({
+                        content : `thu 1P _ ${newnguoiban} _ ${dienthoai} _ ${maynew} _ ${somay} _ ${seri}`,
+                        money: gia,
+                        ngay: ngaymua,
+                        type: 1,
+                        link: `http://localhost:3000/system/kho-don-mount/2#don-${ngaymua}-${loaithutien}-${newnguoiban}-${dienthoai}-${gia}`
+                    })
+                    console.log(res2)
                 }
                 this.props.handleOnModal('')
         }
