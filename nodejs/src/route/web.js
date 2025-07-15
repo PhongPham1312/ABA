@@ -12,6 +12,7 @@ import linhkiendonController from '../controllers/linhkiendonController'
 import ASController from '../controllers/ASController'
 import tmController from '../controllers/tmController'
 import thuchinam from '../controllers/thuchinam'
+import thuchithang from '../controllers/thuchithang'
 
 let router = express.Router();
 
@@ -69,6 +70,8 @@ let initWebRoutes = (app) => {
 
     // as
     router.post('/api/create-as', ASController.handleCreateAS);
+    router.get('/api/get-all-by-thang', ASController.getSacombankByMonthGrouped);
+
     // tm
     router.post('/api/create-tm', tmController.handleCreateTM);
 
@@ -76,6 +79,12 @@ let initWebRoutes = (app) => {
     router.post('/api/create-thuchinam', thuchinam.createthuchi);
     router.get('/api/get-all-thuchinam', thuchinam.getAll);
     router.delete('/api/delete-thuchinam', thuchinam.deletethuchi);
+
+     // thuchithang
+    router.post('/api/create-thuchithang', thuchithang.createthuchi);
+    router.get('/api/get-all-thuchithang', thuchithang.getAll);
+    router.get('/api/get-all-thuchithang-by-parent', thuchithang.getAllthuchithangbyparent);
+    router.delete('/api/delete-thuchithang', thuchithang.deletethuchi);
  
     return app.use("/", router);
 }

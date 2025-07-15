@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { createThuchinam } from '../../../../services/thuchinam';
+import { createThuchithang } from '../../../../services/thuchithang';
 import { toast } from 'react-toastify';
 
-class ModalThuchithang extends Component {
+class Modalthuchithang extends Component {
 
     constructor(props){
         super(props);
         this.state = {
             name: '',
+            parent: this.props?.match.params.id
         }
     }
 
 
     componentDidMount() {
-        
+        console.log( this.props?.match.params)
     }
 
     // xử lý nhập
@@ -45,8 +46,9 @@ class ModalThuchithang extends Component {
     handleAdd = async () => {
         if (this.checkValue() === true) {
             try {
-                let res = await createThuchinam({
-                    name: this.state.name.trim()
+                let res = await createThuchithang({
+                    name: this.state.name.trim(),
+                    parent: this.state.parent
                 });
 
                 if (res?.errCode === 0) {
@@ -87,7 +89,7 @@ class ModalThuchithang extends Component {
                             value={this.state.name}
                             onKeyDown={this.handleEnterPress}
                             onChange={this.handleInputChange}
-                            placeholder='THU CHI NĂM ... '/>
+                            placeholder='THU CHI THÁNG ... '/>
                     </div>
 
                     
@@ -112,4 +114,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ModalThuchithang));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Modalthuchithang));

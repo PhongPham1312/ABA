@@ -5,8 +5,13 @@ const handleCreateAS = async (req, res) => {
     return res.status(200).json(result);
 };
 
+const getSacombankByMonthGrouped = async (req, res) => {
+    const result = await asService.getSacombankByMonthGrouped(req.query.thang);
+    return res.status(200).json(result);
+};
 
 module.exports = {
-    handleCreateAS :handleCreateAS
+    handleCreateAS :handleCreateAS,
+    getSacombankByMonthGrouped: getSacombankByMonthGrouped
 }
 

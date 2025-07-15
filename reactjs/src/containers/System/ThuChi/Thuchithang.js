@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import { listnamelink } from '../../../utils/constant';
-import Modalthuchi from './THUCHINAM/Modalthuchinam';
-import { getAllthuchinam ,deletethuchi } from '../../../services/thuchinam';
+import Modalthuchithang from './THUCHINAM/Modalthuchithang';
+import { getAllthuchithangbyparent , deletethuchithang } from '../../../services/thuchithang';
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 
@@ -24,12 +24,12 @@ class Thuchithang extends Component {
         this.setState({
             linkName: this.timTenTheoLink()
         })
-        /* await this.getallthuchi() */
+        await this.getallthuchi()
          
     }
 
-    /* getallthuchi = async () => {
-        let res = await getAllThuchithang();
+    getallthuchi = async () => {
+        let res = await getAllthuchithangbyparent(this.props.match.params.id);
         if(res && res.errCode === 0){
             this.setState({
                 listthuchi: res.data
@@ -39,9 +39,9 @@ class Thuchithang extends Component {
             this.setState({
         listthuchi: []})
     }
- */
+
     deletethuchi = async(id) => {
-        let res = await deletethuchi(id);
+        let res = await deletethuchithang(id);
        if(res && res.errCode === 0){
             toast.success('xóa thành công')
             await this.getallthuchi()
@@ -58,7 +58,6 @@ class Thuchithang extends Component {
 
     // tìm namelink theo link
         timTenTheoLink = () => {
-            console.log( this.props.match?.path)
             const item = listnamelink.find(item => item.link === this.props.match?.path);
                 return item ? item.name : null;
         };
@@ -84,10 +83,10 @@ class Thuchithang extends Component {
                 <div className='user-container-ss2'>
 
                     
-
+                
                      {/* link name */}
                         <div className='m-2'>
-                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchinam/${this.props.match.params?.id}`)}
+                            <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`thuchithang/${this.props.match.params?.id}`)}
                             ></i> {this.state.linkName}
                             </div>
                     
@@ -103,9 +102,11 @@ class Thuchithang extends Component {
 
 
                             {/* list */}
-                           {/*  {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
+                            {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
                                 return (
-                                    <li className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
+                                    <li
+                                    onClick={() => this.gotolink(`thuchi/as/${item.name}`)}
+                                     className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
                                     onClick={()=> this.deletethuchi(item.id)}
                                      class="fa-solid fa-circle-xmark"></i></li>
                                 )
@@ -113,12 +114,12 @@ class Thuchithang extends Component {
 
 
                             {this.state.onModal === true &&
-                                <Modalthuchi
+                                <Modalthuchithang
                                 heading= {this.state.typeHeading}
                                 onModal = {this.onModalthuchi} 
                                 getallthuchi = {this.getallthuchi}
                                 />
-                            } */}
+                            } 
                         </div>
                     </div>
                 </div>

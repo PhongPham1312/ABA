@@ -5,17 +5,19 @@ import './ThuChiNam.scss'
 import { listnamelink } from '../../../utils/constant';
 import Modalthuchi from './THUCHINAM/Modalthuchinam';
 import { getAllthuchinam ,deletethuchi } from '../../../services/thuchinam';
+import {getSacombankByMonthGrouped} from  '../../../services/userService'
 import { isEmpty } from 'lodash';
 import { toast } from 'react-toastify';
 
-class ThuChiNam extends Component {
+class ThuChiTM extends Component {
 
     constructor(props){
         super(props);
         this.state = {
             onModal: false,
             typeHeading:'',
-            listthuchi: []
+            listthuchi: [],
+            thang: ''
         }
     }
 
@@ -24,20 +26,29 @@ class ThuChiNam extends Component {
         this.setState({
             linkName: this.timTenTheoLink()
         })
-        await this.getallthuchi()
-         
+        let thang = this.getCurrentMonth()
+        this.setState({
+            thang: thang
+        })
+        await this.getallthuchi(thang)
     }
 
-    getallthuchi = async () => {
-        let res = await getAllthuchinam();
-        if(res && res.errCode === 0){
-            this.setState({
-                listthuchi: res.data
-            })
-        }
-        else 
-            this.setState({
-        listthuchi: []})
+    getCurrentMonth = () => {
+        const today = new Date();
+        return today.getMonth() + 1; // Tháng trong JS tính từ 0 đến 11 nên +1
+    };
+
+    getallthuchi = async (thang) => {
+       let res = await getSacombankByMonthGrouped(thang);
+            console.log(res)
+            if(res && res.errCode === 0){
+                this.setState({
+                    listthuchi: res.data
+                })
+            }
+            else 
+                this.setState({
+            listthuchi: []})
     }
 
     deletethuchi = async(id) => {
@@ -76,13 +87,45 @@ class ThuChiNam extends Component {
         return chuoiCha.includes(chuoiCon);
     };
 
+    // kieem tra url
+    kiemTraChuoi = (chuoiCha, chuoiCon) => {
+        return chuoiCha.includes(chuoiCon);
+    };
+
+    // định dạng giá tiền
+    formatNumber = (value) => {
+        if (!value) return '';
+
+        // Giữ dấu trừ nếu có
+        const isNegative = value.trim().startsWith('-');
+        
+        // Loại bỏ tất cả ký tự không phải số
+        let cleaned = value.replace(/\D/g, '');
+
+        // Thêm dấu trừ lại nếu có
+        if (isNegative) {
+            cleaned = '-' + cleaned;
+        }
+
+        // Format lại số với dấu cách
+        return cleaned.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    };
+
+
     render() {
-        let {listthuchi} = this.state
+        let {listthuchi } = this.state
+        console.log(this.props.match.path)
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
 
-                    
+                     {/* list user option */}
+                    <div className='user-container kho-container'>
+                        <ul>
+                            <li onClick={this.onAS} className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
+                            <li onClick={this.onTM} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
+                        </ul>
+                    </div>
 
                      {/* link name */}
                         <div className='m-2'>
@@ -102,14 +145,30 @@ class ThuChiNam extends Component {
 
 
                             {/* list */}
-                            {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
+                            {/* {listthuchi && !isEmpty(listthuchi) && listthuchi.map((item, index) => {
                                 return (
                                     <li onClick={() => this.gotolink(`thuchithang/${item.id}`)}
                                      className='thuchi-item'><span><i class="fa-solid fa-folder"></i> {item.name}</span> <i
                                     onClick={()=> this.deletethuchi(item.id)}
                                      class="fa-solid fa-circle-xmark"></i></li>
                                 )
-                            })}
+                            })} */}
+
+                            <div>
+                                {Object.entries(listthuchi).map(([ngay, items]) => (
+                                    <div key={ngay} className="ngay-group">
+                                    <h5>{ngay}.{this.state.thang}</h5>
+                                    <ul>
+                                        {items.map((item, idx) => (
+                                        <li className='thuchi-content' key={item.id || idx}>
+                                            <div className='money'>{this.formatNumber(item.money)}</div>
+                                            <div onClick={() => this.gotolink(item.link)} className={item.link !== null ? 'link' : ''}>{item.content}</div>
+                                        </li>
+                                        ))}
+                                    </ul>
+                                    </div>
+                                ))}
+                                </div>
 
 
                             {this.state.onModal === true &&
@@ -139,4 +198,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThuChiNam));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThuChiTM));

@@ -14,6 +14,7 @@ import xacManage from '../containers/System/Kho/xacManage';
 import donmay from '../containers/System/Kho/donmay';
 import ThuChiNam from '../containers/System/ThuChi/ThuChiNam';
 import Thuchithang from '../containers/System/ThuChi/Thuchithang';
+import Thuchi from '../containers/System/ThuChi/Thuchi';
 
 
 class System extends Component {
@@ -45,6 +46,7 @@ class System extends Component {
                         <Route path="/system/kho-don-mount/:id" component={donmay} />
                         <Route path="/system/thuchinam" component={ThuChiNam} />
                         <Route path="/system/thuchithang/:id" component={Thuchithang} />
+                        <Route path="/system/thuchi/as/:id" component={Thuchi} /> {/* home */}
                         <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                     </Switch>
                 </div>

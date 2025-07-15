@@ -85,6 +85,12 @@ const getLinhkienByDonmay = (donId) => {
     });
 };
 
+const getSacombankByMonthGrouped = (donId) => {
+    return axios.get('/api/get-all-by-thang', {
+        params: { thang: donId }
+    });
+};
+
 const deleteLinhkiendon = (donId) => {
         console.log(donId)
     return axios.delete('/api/delete-linhkiendon', {
@@ -97,5 +103,6 @@ export { handleLoginApi, getAllPosition ,
     getAllJob ,getAllCustomer ,getAllMay,
     createMay ,addCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
-    deleteLinhkiendon, handleCreateAS, handleCreateTM
+    deleteLinhkiendon, handleCreateAS, handleCreateTM, 
+    getSacombankByMonthGrouped
 };

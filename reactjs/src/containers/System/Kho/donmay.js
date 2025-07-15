@@ -167,7 +167,7 @@ class DonMay extends Component {
                                                                 {item.name} _ {item.somay !== null ? item.somay : "..."} _ {item.seri !== null ? item.seri : "..."} <i class="fa-solid fa-pen-to-square"></i>
                                                             </td>
                                                             <td rowspan="3" className='name'>
-                                                                <li>- Thu : - {this.formatNumber(item?.gia)} ( {item?.hinhthucthuloai} : {item?.hinhthucthungay} )</li>
+                                                                <li>- Thu : - {this.formatNumber(item?.gia)} <span className='text-name'>( {item?.hinhthucthuloai} : {item?.hinhthucthungay} )</span></li>
                                                                 <li><Linklien 
                                                                     donmay={item.id}
                                                                     reload={this.state.reloadTrigger}

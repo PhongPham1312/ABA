@@ -165,6 +165,10 @@
                             tr {
                                 .name{
                                     position: relative;
+
+                                    .text-name{
+                                        color: blue;
+                                    }
                                     .linhkien {
                                         i{
                                             margin-left: 5px;
