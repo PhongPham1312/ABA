@@ -1,12 +1,23 @@
-import tmService from '../services/tmService';
+import asService from '../services/tmService';
 
-const handleCreateTM = async (req, res) => {
-    const result = await tmService.createTM(req.body);
+const createTM = async (req, res) => {
+    const result = await asService.createTM(req.body);
     return res.status(200).json(result);
 };
 
+const getTMByMonthGrouped = async (req, res) => {
+    const result = await asService.getTMByMonthGrouped(req.query.thang);
+    return res.status(200).json(result);
+};
+
+const deleteTM = async (req, res) => {
+    const result = await asService.deleteTM(req.query.id);
+    return res.status(200).json(result);
+};
 
 module.exports = {
-    handleCreateTM :handleCreateTM
+    createTM :createTM,
+    getTMByMonthGrouped: getTMByMonthGrouped,
+    deleteTM: deleteTM
 }
 

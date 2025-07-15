@@ -5,7 +5,7 @@ import './Khomanage.scss'
 import { toast } from 'react-toastify';
 import { createDon } from '../../../services/donService';
 import { getAllCustomer , getAllMay , addCustomer, getAllUser,
-     createMay , handleCreateAS, handleCreateTM} from '../../../services/userService';
+     createMay , handleCreateAS, createTM} from '../../../services/userService';
 import Select from 'react-select';
 import CreatableSelect from 'react-select/creatable';
 
@@ -149,7 +149,7 @@ class ModalDon extends Component {
                 }
 
                 if(loaithutien === 'TM'){
-                    let res2 = await handleCreateTM({
+                    let res2 = await createTM({
                         content : `thu 1P _ ${newnguoiban} _ ${dienthoai} _ ${maynew} _ ${somay} _ ${seri}`,
                         money: gia,
                         ngay: ngaymua,

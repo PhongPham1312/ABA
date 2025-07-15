@@ -48,7 +48,7 @@ const handleCreateAS = (data) => {
     return axios.post(`/api/create-as`, data);
 }
 
-const handleCreateTM = (data) => {
+const createTM = (data) => {
     return axios.post(`/api/create-tm`, data);
 }
 
@@ -91,6 +91,12 @@ const getSacombankByMonthGrouped = (donId) => {
     });
 };
 
+const getTMByMonthGrouped = (donId) => {
+    return axios.get('/api/get-all-tm-by-thang', {
+        params: { thang: donId }
+    });
+};
+
 const deleteLinhkiendon = (donId) => {
         console.log(donId)
     return axios.delete('/api/delete-linhkiendon', {
@@ -105,11 +111,18 @@ const deleteAS = (donId) => {
     });
 };
 
+const deleteTM = (donId) => {
+        console.log(donId)
+    return axios.delete('/api/delete-tm', {
+        params: { id: donId } // ⛔ Đây chỉ đúng với GET request
+    });
+};
+
 export { handleLoginApi, getAllPosition , 
     createUser , getAllUser , deleteUser, 
     getAllJob ,getAllCustomer ,getAllMay,
     createMay ,addCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
-    deleteLinhkiendon, handleCreateAS, handleCreateTM, 
-    getSacombankByMonthGrouped , deleteAS
+    deleteLinhkiendon, handleCreateAS, createTM, getTMByMonthGrouped ,
+    getSacombankByMonthGrouped , deleteAS ,deleteTM
 };

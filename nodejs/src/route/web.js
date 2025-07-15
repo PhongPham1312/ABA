@@ -74,7 +74,9 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-as', ASController.deleteAS);
 
     // tm
-    router.post('/api/create-tm', tmController.handleCreateTM);
+    router.post('/api/create-tm', tmController.createTM);
+    router.get('/api/get-all-tm-by-thang', tmController.getTMByMonthGrouped);
+    router.delete('/api/delete-tm', tmController.deleteTM);
 
     // thuchinăm
     router.post('/api/create-thuchinam', thuchinam.createthuchi);

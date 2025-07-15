@@ -4,14 +4,14 @@ import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import CommonUtils from '../../../utils/CommonUtils';
 
-class ThuChiTm extends Component {
+class ThuChiAs extends Component {
 
     constructor(props){
         super(props);
         this.state = {
             thang:  '',
         }
-    }
+    }   
 
 
     async componentDidMount() {
@@ -65,15 +65,15 @@ class ThuChiTm extends Component {
                      {/* list user option */}
                     <div className='user-container kho-container'>
                         <ul>
-                            <li onClick={() => this.gotolink(`thuchi-as`)} className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
-                            <li  className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
+                            <li className={this.props.match.path.toLowerCase().includes("as") === true ? 'li1' : ''} >AS</li>
+                            <li onClick={() => this.gotolink(`thuchi-tm`)} className={this.props.match.path.toLowerCase().includes("tm") === true ? 'li1' : ''} >TM</li>
                         </ul>
                     </div>
 
                      {/* link name */}
                         <div className='m-2'>
                             <i class="fa-solid fa-arrow-left" onClick={() => this.gotolink(`home`)}
-                            ></i> THU CHI TM THÁNG {this.state.thang}
+                            ></i> THU CHI AS THÁNG {this.state.thang}
                             </div>
                     
                     {/* list kho */}
@@ -103,4 +103,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThuChiTm));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ThuChiAs));

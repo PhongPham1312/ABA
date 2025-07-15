@@ -12,10 +12,10 @@ import camManage from '../containers/System/Kho/camManage';
 import suathayManage from '../containers/System/Kho/suathayManage';
 import xacManage from '../containers/System/Kho/xacManage';
 import donmay from '../containers/System/Kho/donmay';
-import ThuChiNam from '../containers/System/ThuChi/ThuChiNam';
-import Thuchithang from '../containers/System/ThuChi/Thuchithang';
-import Thuchi from '../containers/System/ThuChi/Thuchi';
-import ThuchiTM from '../containers/System/ThuChi/ThuchiTM';
+import ThuchiManage from '../containers/System/ThuChi/ThuchiManage';
+import ThuchiAs from '../containers/System/ThuChi/ThuchiAs';
+import ThuchiTM
+ from '../containers/System/ThuChi/ThuchiTM';
 
 class System extends Component {
     render() {
@@ -44,10 +44,9 @@ class System extends Component {
                         <Route path="/system/kho-sua-thay-mount/:id" component={suathayManage} />
                         <Route path="/system/kho-xac-mount/:id" component={xacManage} />
                         <Route path="/system/kho-don-mount/:id" component={donmay} />
-                        <Route path="/system/thuchinam" component={ThuChiNam} />
-                        <Route path="/system/thuchithang/:id" component={Thuchithang} />
-                        <Route path="/system/thuchi/as/:id" component={Thuchi} /> {/* home */}
-                        <Route path="/system/thuchi/tm/:id" component={ThuchiTM} /> {/* home */}
+                        <Route path="/system/thuchi" component={ThuchiManage} />
+                        <Route path="/system/thuchi-as" component={ThuchiAs} />
+                        <Route path="/system/thuchi-tm" component={ThuchiTM} />
                         <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                     </Switch>
                 </div>

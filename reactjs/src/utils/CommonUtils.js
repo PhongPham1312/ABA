@@ -25,6 +25,32 @@ class CommonUtils {
         return chuoiCha.includes(chuoiCon);
     };
 
+    // format tiền 
+    static formatNumber = (value) => {
+        if (!value && value !== 0) return '';
+
+        // Chuyển thành chuỗi, loại khoảng trắng
+        const strVal = String(value).trim();
+
+        // Kiểm tra có dấu âm không
+        const isNegative = strVal.startsWith('-');
+
+        // Lấy phần số (loại bỏ mọi ký tự không phải số)
+        let cleaned = strVal.replace(/\D/g, '');
+        if (!cleaned) return '';
+
+        // Ép về số, thêm lại dấu nếu âm
+        const num = Number(cleaned) * (isNegative ? -1 : 1);
+
+        // Format số có dấu cách: 1 000, 200 000
+        const formatted = Math.abs(num).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+        // Thêm dấu "+" hoặc "-"
+        return (num < 0 ? '- ' : '+ ') + formatted;
+    };
+                                                     
+
+
 }
 
 export default CommonUtils;
