@@ -119,10 +119,12 @@ let handleUserLogin = (phone, password) => {
     });
 };
 
+
 // get all user
 const getAllUser = async () => {
     try {
         let users = await db.User.findAll({
+            order: [['createdAt', 'DESC']],
             where: { status: true }, // chỉ lấy người dùng chưa bị ẩn
             attributes: { exclude: ['password', 'image_t', 'image_s'] }, // ❌ Không trả về password
             include: [

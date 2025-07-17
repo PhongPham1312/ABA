@@ -77,7 +77,6 @@ class KhoManage extends Component {
     };
 
     render() {
-        console.log(this.props.match.params?.id)
         let url = this.kiemTraChuoi(this.props.match?.url, 'kho-phone-mount' ) ? true : false;
         return (
             <div className="user-container-ss ">

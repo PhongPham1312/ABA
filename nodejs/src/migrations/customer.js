@@ -15,13 +15,16 @@ module.exports = {
       phone: {
         type: Sequelize.STRING
       },
-      zalo: {
+      type: {
         type: Sequelize.STRING
       },
       image_t: {
         type: Sequelize.STRING
       },
       image_s: {
+        type: Sequelize.BOOLEAN
+      },
+      address: {
         type: Sequelize.BOOLEAN
       },
       createdAt: {

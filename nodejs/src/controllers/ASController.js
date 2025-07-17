@@ -15,9 +15,15 @@ const deleteAS = async (req, res) => {
     return res.status(200).json(result);
 };
 
+const getGroupByNgay = async (req, res) => {
+    const result = await asService.getGroupByDateService();
+    return res.status(200).json(result);
+};
+
 module.exports = {
     handleCreateAS :handleCreateAS,
     getSacombankByMonthGrouped: getSacombankByMonthGrouped,
-    deleteAS: deleteAS
+    deleteAS: deleteAS,
+    getGroupByNgay: getGroupByNgay
 }
 

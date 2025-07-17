@@ -45,8 +45,8 @@ class System extends Component {
                         <Route path="/system/kho-xac-mount/:id" component={xacManage} />
                         <Route path="/system/kho-don-mount/:id" component={donmay} />
                         <Route path="/system/thuchi" component={ThuchiManage} />
-                        <Route path="/system/thuchi-as" component={ThuchiAs} />
-                        <Route path="/system/thuchi-tm" component={ThuchiTM} />
+                        <Route path="/system/thuchi-as/:id" component={ThuchiAs} />
+                        <Route path="/system/thuchi-tm/:id" component={ThuchiTM} />
                         <Route component={() => { return (<Redirect to={systemMenuPath} />) }} />
                     </Switch>
                 </div>

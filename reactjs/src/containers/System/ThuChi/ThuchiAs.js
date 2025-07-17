@@ -4,7 +4,8 @@ import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import CommonUtils from '../../../utils/CommonUtils';
 import ModalAS from './Modal/ModalAS';
-
+import { getallasthang } from '../../../services/sacombank';
+import { isEmpty } from 'lodash';
 class ThuChiAs extends Component {
 
     constructor(props){
@@ -12,7 +13,8 @@ class ThuChiAs extends Component {
         this.state = {
             thang:  '',
             onModalAS: false,
-            typeModal: ""
+            typeModal: "",
+            listAS:[]
         }
     }   
 
@@ -21,7 +23,19 @@ class ThuChiAs extends Component {
         this.setState({
             thang: CommonUtils.getCurrentMonth()
         })
+        await this.getallthang(this.props.match.params.id)
+    }
 
+    getallthang = async (thang) => {
+        let res = await getallasthang(thang)
+        if (res && res.errCode === 0 && res.data) {
+           this.setState({
+            listAS: res.data
+           })
+        }
+        else  this.setState({
+            listAS: []
+           })
     }
 
      gotolink = (link) =>
@@ -66,6 +80,7 @@ class ThuChiAs extends Component {
 
     
     render() {
+        let {listAS} = this.state
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
@@ -78,13 +93,30 @@ class ThuChiAs extends Component {
                     
                     {/* list kho */}
                     <div className='list-user'>
-                        
+                        {listAS &&  !isEmpty(listAS) && 
+                            Object.entries(listAS).map(([day, items]) => (
+                            <div key={day}>
+                                <h5 className='mt-3'>{day}.{this.props.match?.params?.id}</h5>
+                                <ul className='list-as-li'>
+                                {items.map(item => (
+                                    <li className='list-as-item' key={item.id}>
+                                        <div className='table'>{this.formatNumber(item.money)}</div>
+                                        <div className='table'>{item.content}</div>
+                                    </li>
+                                ))}
+                                </ul>
+                            </div>
+                            ))
+                        }
 
                         {/* Modal */}
                         {this.state.onModalAS === true &&
                             <ModalAS 
+                                type = 'as'
                                 typeModal = {this.state.typeModal}
                                 onModalAS = {this.onmodalas}
+                                getallthang = {this.getallthang}
+                                thang = {this.props.match?.params?.id}
                             />
                         }
 

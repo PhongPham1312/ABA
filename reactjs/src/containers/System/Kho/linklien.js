@@ -30,7 +30,6 @@ class LinhkienDonmay extends Component {
 
      gotolink = (link) =>
         {
-        console.log(link)
         if ( this.props.history )
         {
             this.props.history.push( `/system/${link}` );

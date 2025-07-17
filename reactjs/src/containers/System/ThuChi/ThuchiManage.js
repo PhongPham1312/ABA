@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './ThuChiNam.scss'
 import CommonUtils from '../../../utils/CommonUtils';
+import { getGroupByNgay } from '../../../services/sacombank';
 
 class ThuChi extends Component {
 
@@ -12,7 +13,10 @@ class ThuChi extends Component {
             thang:  '',
             onListnam:false,
             onListthang:false,
-            onModalAS: false
+            onModalAS: false,
+            dataGroup : '',
+            listNamThang: [],
+            onListthangfile: false
         }
     }
 
@@ -21,8 +25,38 @@ class ThuChi extends Component {
         this.setState({
             thang: CommonUtils.getCurrentMonth()
         })
+        await this.getGroupByNgays()
 
     }
+
+    getGroupByNgays = async () => {
+    try {
+        let res = await getGroupByNgay(); // gọi service
+        if (res && res.errCode === 0) {
+            const data = res.data;
+
+            // Nếu đây là object rỗng => không có dữ liệu
+            if (!data || Object.keys(data).length === 0) return;
+
+            const years = Object.keys(data); // ['2024', '2025']
+            const yearList = years.map(year => {
+                const months = Object.keys(data[year]); // ví dụ ['7', '8']
+                return {
+                    year,
+                    months
+                };
+            });
+
+            this.setState({
+                dataGroup: data,
+                listNamThang: yearList
+            });
+        }
+    } catch (e) {
+        console.error('Lỗi getGroupByNgay:', e);
+    }
+}
+
 
      gotolink = (link) =>
     {
@@ -63,12 +97,17 @@ class ThuChi extends Component {
         })
     }
 
-    onlistthang = () => {
-        this.setState({
-            onListthang : !this.state.onListthang
-        })
+    onlistthang = (year) => {
+        this.setState(prev => ({
+            onListthang: prev.onListthang === year ? '' : year
+        }));
     }
 
+    onlistthangfile = (mounth) => {
+        this.setState(prev => ({
+            onListthangfile: prev.onListthangfile === mounth ? '' : mounth
+        }));
+    }
     
     render() {
         return (
@@ -77,45 +116,53 @@ class ThuChi extends Component {
 
                     {/* list năm */}
                     <div className='list-thuchi-folder'>
-                        <div className='folder'><span>Thư mục</span> 
-                        {this.state.onListnam === true ?
-                            <i class="fa-solid fa-arrow-down" onClick={this.onlistnam}></i> : 
-                            <i class="fa-solid fa-arrow-right" onClick={this.onlistnam}></i>}
+                        <div className='folder'>
+                            <span>Thư mục</span>
+                            {this.state.onListnam
+                            ? <i className="fa-solid fa-arrow-down" onClick={this.onlistnam}></i>
+                            : <i className="fa-solid fa-arrow-right" onClick={this.onlistnam}></i>}
                         </div>
-                        {this.state.onListnam === true  &&
-                         <ul className='list-fold'>
-                            <li>
-                                <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span>
-                                 {this.state.onListthang === true ?
-                                <i class="fa-solid fa-arrow-down" onClick={this.onlistthang}></i> : 
-                                <i class="fa-solid fa-arrow-right" onClick={this.onlistthang}></i>} </div>
-                                
-                                {this.state.onListthang === true &&
+
+                        {this.state.onListnam && (
+                            <ul className='list-fold'>
+                            {this.state.listNamThang?.map((item, idx) => (
+                                <li key={idx}>
+                                <div className='li-content'>
+                                    <span>
+                                    <i className="fa-solid fa-folder"></i> THU CHI NĂM {item.year}
+                                    </span>
+                                    {this.state.onListthang === item.year ? (
+                                    <i className="fa-solid fa-arrow-down" onClick={() => this.onlistthang(item.year)}></i>
+                                    ) : (
+                                    <i className="fa-solid fa-arrow-right" onClick={() => this.onlistthang(item.year)}></i>
+                                    )}
+                                </div>
+
+                                {this.state.onListthang === item.year && (
                                     <ul className='list-fold-content'>
-                                        <li> <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                                            </li>
-                                        <li><div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                                            </li>
-                                        <li><div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                                            </li>
+                                        {item.months.map((thang, idx2) => (
+                                        <li key={idx2}>
+                                            <div className='li-content'>
+                                            <span><i className="fa-solid fa-folder"></i> THÁNG {thang}</span>
+                                            <i className="fa-solid fa-arrow-right" onClick={() =>this.onlistthangfile(thang)}></i>
+                                            </div>
+
+                                            {this.state.onListthangfile === thang && 
+                                                <ul className='li-content-list-file'>
+                                                    <li onClick={() => this.gotolink(`thuchi-tm/${thang}`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI TM THÁNG {thang}</span></li>
+                                                    <li onClick={() => this.gotolink(`thuchi-as/${thang}`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI AS THÁNG {thang}</span></li>
+                                                    <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG PART TIME THÁNG {thang}</span></li>
+                                                    <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG FULL TIME THÁNG {thang}</span></li>
+                                            </ul>
+                                            }
+                                        </li>
+                                        ))}
                                     </ul>
-                                }
-                                
-                            </li>
-                            {/*  */}
-                            <li>
-                                <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                            </li>
-                            {/*  */}
-                            <li>
-                                <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                            </li>
-                            {/*  */}
-                            <li>
-                                <div  className='li-content'> <span><i class="fa-solid fa-folder"></i>THU CHI NĂM 2025</span> <i class="fa-solid fa-arrow-right"></i> </div>
-                            </li>
-                        </ul>
-                         }
+                                    )}
+                                </li>
+                            ))}
+                            </ul>
+                        )}
                     </div>
 
 
@@ -127,8 +174,8 @@ class ThuChi extends Component {
                     {/* list kho */}
                     <div className='list-user list-file'>
                         <ul>
-                            <li> <span><i class="fa-solid fa-file-import"></i> THU CHI TM THÁNG {this.state.thang}</span></li>
-                            <li onClick={() => this.gotolink(`thuchi-as`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI AS THÁNG {this.state.thang}</span></li>
+                            <li onClick={() => this.gotolink(`thuchi-tm/${this.state.thang}`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI TM THÁNG {this.state.thang}</span></li>
+                            <li onClick={() => this.gotolink(`thuchi-as/${this.state.thang}`)}> <span><i class="fa-solid fa-file-import"></i> THU CHI AS THÁNG {this.state.thang}</span></li>
                             <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG PART TIME THÁNG {this.state.thang}</span></li>
                             <li> <span><i class="fa-solid fa-file-import"></i> LƯƠNG FULL TIME THÁNG {this.state.thang}</span></li>
                         </ul>

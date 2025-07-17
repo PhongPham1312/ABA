@@ -68,7 +68,6 @@ class CustomerManage extends Component {
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
-                    <div className='m-2'><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink('home')}></i> {this.state.linkName}</div>
                     {/* list user option */}
                     <div className='user-container'>
                         <ul>
@@ -77,15 +76,13 @@ class CustomerManage extends Component {
                             <li onClick={() => this.gotolink('customer-manage')} className={url === true ? 'li1' : ''}>KHÁCH HÀNG</li>
                         </ul>
                     </div>
+                    <div className='m-2 header'>
+                        <span><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink('home')}></i> {this.state.linkName}</span>
+                        <button className="btn-add-user" onClick={this.handleOnModal}><i className="fas fa-plus"></i>   </button>
+                    </div>
 
                     {/* list user */}
                     <div className='list-user'>
-                        <div>
-                            <button className="btn-add-user" onClick={this.handleOnModal}>
-                                <i className="fas fa-plus"></i> Thêm thành viên
-                            </button>
-                        </div>
-
 
                     </div>
                 </div>

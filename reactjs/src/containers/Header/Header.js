@@ -9,7 +9,6 @@ class Header extends Component {
 
     gotolink = (link) =>
     {
-        console.log(`/system/${link}`)
         if ( this.props.history )
         {
             this.props.history.push( `/system/${link}` );

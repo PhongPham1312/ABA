@@ -16,7 +16,6 @@ const getAllthuchinam = () =>{
 
 
 const deletethuchi = (donId) => {
-        console.log(donId)
     return axios.delete('/api/delete-thuchinam', {
         params: { id: donId } // ⛔ Đây chỉ đúng với GET request
     });

@@ -5,8 +5,8 @@ import './Khomanage.scss'
 import { toast } from 'react-toastify';
 import { createDon } from '../../../services/donService';
 import { getAllCustomer , getAllMay , addCustomer, getAllUser,
-     createMay , handleCreateAS, createTM} from '../../../services/userService';
-import Select from 'react-select';
+     createMay , createTM} from '../../../services/userService';
+import { createAS } from '../../../services/sacombank';
 import CreatableSelect from 'react-select/creatable';
 
 class ModalDon extends Component {
@@ -139,7 +139,7 @@ class ModalDon extends Component {
                     phone: dienthoai });
                 }
                 if(loaithutien === 'AS'){
-                    let res2 = await handleCreateAS({
+                    let res2 = await createAS({
                         content : `thu 1P _ ${newnguoiban} _ ${dienthoai} _ ${maynew} _ ${somay} _ ${seri}`,
                         money: gia,
                         ngay: ngaymua,
@@ -156,7 +156,6 @@ class ModalDon extends Component {
                         type: 1,
                         link: `http://localhost:3000/system/kho-don-mount/2#don-${ngaymua}-${loaithutien}-${newnguoiban}-${dienthoai}-${gia}`
                     })
-                    console.log(res2)
                 }
                 this.props.handleOnModal('')
         }

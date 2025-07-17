@@ -11,8 +11,7 @@ import mayController from '../controllers/mayController'
 import linhkiendonController from '../controllers/linhkiendonController'
 import ASController from '../controllers/ASController'
 import tmController from '../controllers/tmController'
-import thuchinam from '../controllers/thuchinam'
-import thuchithang from '../controllers/thuchithang'
+import lichController from '../controllers/lich'
 
 let router = express.Router();
 
@@ -71,23 +70,17 @@ let initWebRoutes = (app) => {
     // as
     router.post('/api/create-as', ASController.handleCreateAS);
     router.get('/api/get-all-by-thang', ASController.getSacombankByMonthGrouped);
+    router.get('/api/get-all-by-ngay', ASController.getGroupByNgay);
     router.delete('/api/delete-as', ASController.deleteAS);
 
     // tm
     router.post('/api/create-tm', tmController.createTM);
-    router.get('/api/get-all-tm-by-thang', tmController.getTMByMonthGrouped);
+    router.get('/api/get-all-tm-by-thang', tmController.getTienmatkByMonthGrouped);
+    router.get('/api/get-all-tm-by-ngay', tmController.getGroupByDateService);
     router.delete('/api/delete-tm', tmController.deleteTM);
 
-    // thuchinăm
-    router.post('/api/create-thuchinam', thuchinam.createthuchi);
-    router.get('/api/get-all-thuchinam', thuchinam.getAll);
-    router.delete('/api/delete-thuchinam', thuchinam.deletethuchi);
+    router.post('/api/create-lich', lichController.handleCreateLich);
 
-     // thuchithang
-    router.post('/api/create-thuchithang', thuchithang.createthuchi);
-    router.get('/api/get-all-thuchithang', thuchithang.getAll);
-    router.get('/api/get-all-thuchithang-by-parent', thuchithang.getAllthuchithangbyparent);
-    router.delete('/api/delete-thuchithang', thuchithang.deletethuchi);
  
     return app.use("/", router);
 }

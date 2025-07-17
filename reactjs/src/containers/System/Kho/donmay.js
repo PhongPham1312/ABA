@@ -53,7 +53,6 @@ class DonMay extends Component {
     // get all dọn may
     getalldon = async() => {
         let res = await getAllDon()
-        console.log(res)
         if (res && res?.errCode === 0) {
             this.setState({
                 listdon: res.data

@@ -45,23 +45,28 @@ const getSacombankByMonthGrouped = async (month) => {
       };
     }
 
-    // Lấy toàn bộ bản ghi
     const allData = await db.Sacombank.findAll({
-      order: [['ngay', 'DESC']]
+      order: [['ngay', 'DESC']],
+      raw: true
     });
 
-    // Lọc theo tháng và nhóm lại theo ngày
     const filteredGrouped = {};
 
     allData.forEach(item => {
-      if (item.ngay && typeof item.ngay === 'string') {
-        const parts = item.ngay.split('.');
-        if (parts.length === 2 && parts[1] === String(month)) {
+      const ngay = item.ngay;
+
+      if (ngay && typeof ngay === 'string') {
+        const parts = ngay.split('.');
+        if (parts.length === 3) {
           const day = parts[0];
-          if (!filteredGrouped[day]) {
-            filteredGrouped[day] = [];
+          const itemMonth = parts[1]; // tháng trong dữ liệu
+          
+          if (String(itemMonth) === String(month)) {
+            if (!filteredGrouped[day]) {
+              filteredGrouped[day] = [];
+            }
+            filteredGrouped[day].push(item);
           }
-          filteredGrouped[day].push(item);
         }
       }
     });
@@ -69,7 +74,7 @@ const getSacombankByMonthGrouped = async (month) => {
     return {
       errCode: 0,
       message: 'Lấy dữ liệu thành công',
-      data: filteredGrouped  // object group theo ngày
+      data: filteredGrouped
     };
 
   } catch (error) {
@@ -80,6 +85,7 @@ const getSacombankByMonthGrouped = async (month) => {
     };
   }
 };
+
 
 const deleteAS = async (id) => {
   try {
@@ -118,8 +124,45 @@ const deleteAS = async (id) => {
 };
 
 
+const getGroupByDateService = async () => {
+    try {
+        const allRecords = await db.Sacombank.findAll({
+            raw: true,
+            attributes: ['content', 'money', 'ngay', 'createdAt'],
+        });
+
+        const grouped = {};
+
+        allRecords.forEach(item => {
+            if (!item.ngay) return;
+
+            const [day, month, year] = item.ngay.split('.');
+
+            if (!grouped[year]) grouped[year] = {};
+            if (!grouped[year][month]) grouped[year][month] = {};
+            if (!grouped[year][month][day]) grouped[year][month][day] = [];
+
+            grouped[year][month][day].push(item);
+        });
+
+        return {
+            errCode: 0,
+            data: grouped
+        };
+
+    } catch (e) {
+        console.error(e);
+        return {
+            errCode: 1,
+            errMessage: 'Lỗi server khi group theo ngày'
+        };
+    }
+};
+
+
 module.exports = {
     createAS: createAS,
     getSacombankByMonthGrouped: getSacombankByMonthGrouped,
     deleteAS:deleteAS,
+    getGroupByDateService: getGroupByDateService
 }

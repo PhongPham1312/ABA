@@ -32,7 +32,13 @@ class UserManage extends Component {
             showMsg : '',
             hasZalo: true,
             listUser : [],
-            linkName: ""
+            linkName: "",
+            modalInfo: false,
+            useritem: '', 
+            onLich: '',
+            onLichsys: '',
+            weekDays: [], // 🆕 thêm dòng này
+            lichLam: {}
         }
     }
 
@@ -321,13 +327,133 @@ class UserManage extends Component {
 
      }
 
+    formatPhone = (phone) => {
+        if (!phone) return '';
+        // Xóa khoảng trắng hoặc ký tự không phải số
+        const cleaned = phone.replace(/\D/g, '');
+        if (cleaned.length !== 10) return phone; // nếu không phải 10 số thì giữ nguyên
+
+        return `${cleaned.slice(0, 4)}.${cleaned.slice(4, 8)}.${cleaned.slice(8)}`;
+    };
+
+    onModalInfo = (item) => {
+        this.setState({
+            modalInfo : !this.state.modalInfo,
+            useritem: item,
+            onLich: ''
+        })
+    }
+
+    formatMoney = (num) => {
+        if (typeof num !== 'number') num = Number(num);
+        return num.toLocaleString('fr-FR'); // dùng format của Pháp: dấu cách
+    };
+
+    multiplyAndFormat = (value, multiplier) => {
+        if (!value || isNaN(value)) return '';
+            const result = Number(value) * multiplier;
+
+            return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    };
+
+     onlich = (id) => {
+        this.setState(prev => ({
+            onLich: prev.onLich === id ? '' : id,
+            onLichsys: false
+        }));
+    }
+
+    onlichsys = (item) => {
+        const weekDays = this.getWeekDays()
+        this.setState(prev => ({
+            onLichsys: !prev.onLichsys,
+            onLich: '',
+            useritem: item,
+            weekDays // 🆕 gán danh sách ngày vào state
+        }));
+    };
+
+    getWeekDays = () => {
+        const today = new Date();
+        const dayOfWeek = today.getDay(); // 0 (Chủ nhật) -> 6 (Thứ 7)
+
+        // Lấy ngày đầu tuần (Thứ 2)
+        const monday = new Date(today);
+        const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+        monday.setDate(today.getDate() + diffToMonday);
+
+        // Danh sách thứ
+        const weekNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+
+        const weekDays = [];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(monday);
+            d.setDate(monday.getDate() + i);
+
+            const day = d.getDate();
+            const month = d.getMonth() + 1;
+            const year = d.getFullYear();
+            const thu = weekNames[d.getDay()]; // Lấy thứ
+
+            const formatted = `${thu} _ ${day}.${month}.${year}`;
+            weekDays.push(formatted);
+        }
+
+        return weekDays;
+    };
+
+
+    getDayMonth = (dateString) => {
+        if (!dateString) return '';
+            const parts = dateString.split('.');
+        if (parts.length < 2) return dateString;
+            return `${parts[0]}.${parts[1]}`;
+    };
+
+    handleCheckLich = (day, ca) => {
+        this.setState(prevState => {
+            const lichLam = { ...prevState.lichLam };
+
+            if (!lichLam[day]) {
+                lichLam[day] = { CA1: false, CA2: false, CA3: false, CA4: false };
+            }
+
+            lichLam[day][ca] = !lichLam[day][ca];
+
+            return { lichLam };
+        });
+    };
+
+
+    handleSaveLich = async () => {
+        const { lichLam, useritem } = this.state;
+        const dataSend = [];
+
+        Object.entries(lichLam).forEach(([day, caObj]) => {
+            Object.entries(caObj).forEach(([ca, isChecked]) => {
+                if (isChecked) {
+                    dataSend.push({
+                        userId: useritem.id,
+                        day: `${day}.2025`, // nếu muốn thêm năm
+                        ca: ca,
+                    });
+                }
+            });
+        });
+
+        // Gửi dataSend lên server
+        console.log(dataSend);
+
+        // await saveLichUser(dataSend) // ← gọi API ở đây
+        // toast.success("Đã lưu lịch làm!");
+    };
+
 
     render() {
         let url = this.props.match.path === '/system/user-manage' ? true : false;
         return (
             <div className="user-container-ss ">
                 <div className='user-container-ss2'>
-                    <div className='m-2'><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink('home')}></i> {this.state.linkName}</div>
                     {/* list user option */}
                     <div className='user-container'>
                         <ul>
@@ -336,52 +462,144 @@ class UserManage extends Component {
                             <li onClick={() => this.gotolink('customer-manage')} className=''>KHÁCH HÀNG</li>
                         </ul>
                     </div>
+                    <div className='m-2 header'>
+                        <span><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink('home')}></i> {this.state.linkName}</span>
+                        <button className="btn-add-user" onClick={this.handleOnModal}><i className="fas fa-plus"></i> </button>
+                    </div>
 
                     {/* list user */}
                     <div className='list-user'>
-                        <div>
-                            <button className="btn-add-user" onClick={this.handleOnModal}>
-                                <i className="fas fa-plus"></i> 
-                            </button>
-                        </div>
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Tên</th>
-                                    <th scope="col">Điện thoại</th>
-                                    <th scope="col">vị trí</th>
-                                    <th scope="col">Chức năng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {this.state.listUser !== null && 
+                        {this.state.listUser !== null && 
                                     this.state.listUser.map((item, index) => {
                                         return  (
-                                            <tr>
-                                                <th scope="row">{index+1}</th>
-                                                <td>
-                                                    {this.generateShortCode(item.positionUser?.name) + this.getLastName(item.name) }</td>
-                                                <td>{item.phone}</td>
-                                                <td>{item.jobUser?.name || ''}</td>
-                                                <td>
-                                                    <i className=" i1 fa-solid fa-info"></i>
-                                                    <i className=" i2 fa-solid fa-pen"></i>
-                                                    <i className=" i3 fa-solid fa-trash" 
-                                                        onClick={() => this.handleDeleteUser(item.id)}
-                                                    ></i>
-                                                </td>
-                                            </tr>
+                                            <li className='list-user-item'>
+                                                <span>{this.generateShortCode(item.positionUser?.name) + item.name + ' _ ' + this.formatPhone(item.phone)}</span>
+                                                <span className='list-user-item-span'>
+                                                    <i class="fa-solid fa-arrow-right"  onClick={() => this.onlich(item.id)}></i>
+                                                    {this.state.onLich === item.id &&
+                                                        <ul>
+                                                            <i class="fa-solid fa-circle-xmark" onClick={() => this.onlich('')}></i>
+                                                            <li onClick={() => this.onlichsys(item)} > <i class="fa-solid fa-calendar-days"></i> lên lịch</li>
+                                                            <li  onClick={() => this.onModalInfo(item)}> <i class="fa-solid fa-sack-dollar"></i> bảng lương</li>
+                                                        </ul>
+                                                    }
+                                                </span>
+                                            </li>
                                         )
                                     })
                                     
                                 }
-                                
-                            </tbody>
-                            </table>
+
+                    {/* modal len lich */}
+                    {this.state.onLichsys === true && 
+                        <div className='modal-info'>
+                            <div className='modal-info-container'>
+                            <span className='close-modal-info'>
+                                <i className="fa-solid fa-circle-xmark" onClick={() => this.onlichsys('')}></i>
+                            </span> 
+
+                            <div className='header'>
+                                {this.generateShortCode(this.state.useritem.positionUser?.name) + this.state.useritem.name} 
+                                ( {this.formatPhone(this.state.useritem.phone)} )
+                            </div>
+
+                           <table className="table table-bordered">
+                                <tbody>
+                                    {this.state.weekDays.map((day, index) => {
+                                    const shortDay = this.getDayMonth(day);
+                                    const ca = this.state.lichLam[shortDay] || {};
+                                    return (
+                                        <tr key={index}>
+                                        <td className='lenlich'>
+                                            {shortDay} _{' '}
+                                            <span>
+                                            CA1 <input
+                                                type="checkbox"
+                                                checked={ca.CA1 || false}
+                                                onChange={() => this.handleCheckLich(shortDay, 'CA1')}
+                                            />
+                                            </span>{' _ '}
+                                            <span>
+                                            CA2 <input
+                                                type="checkbox"
+                                                checked={ca.CA2 || false}
+                                                onChange={() => this.handleCheckLich(shortDay, 'CA2')}
+                                            />
+                                            </span>{' _ '}
+                                            <span>
+                                            CA3 <input
+                                                type="checkbox"
+                                                checked={ca.CA3 || false}
+                                                onChange={() => this.handleCheckLich(shortDay, 'CA3')}
+                                            />
+                                            </span>{' _ '}
+                                            <span>
+                                            CA4 <input
+                                                type="checkbox"
+                                                checked={ca.CA4 || false}
+                                                onChange={() => this.handleCheckLich(shortDay, 'CA4')}
+                                            />
+                                            </span>
+                                        </td>
+                                        </tr>
+                                    );
+                                    })}
+                                </tbody>
+                                </table>
+                                 <div className='div-btn'>
+                                    <button className="btn-add-user" 
+                                    onClick={this.handleSaveLich}>
+                                         tạo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        }
 
 
+                    {/* modal info */}
+                     {this.state.modalInfo === true &&
+                        <div className='modal-info'>
+                            <div className='modal-info-container'>
+                                 <span className='close-modal-info'><i class="fa-solid fa-circle-xmark" onClick={() => this.onModalInfo('')}></i></span>
+                                <div className='header'>{this.generateShortCode(this.state.useritem.positionUser?.name) + this.state.useritem.name} ( {this.formatPhone(this.state.useritem.phone)} ) </div>
+                                <div className='modal-info-content'>- lương : <span className='gia'>{this.formatMoney(this.state.useritem.jobUser.money)}</span> / 1 giờ x 4 tiếng = <span className='gia'>{this.multiplyAndFormat(this.state.useritem.jobUser.money, 4)}</span></div>
+                                <div  className='modal-info-content'>- thời gian : CA1 (9h00 - 13h00 ) , CA2 ( 13h00 - 17h00 ) , CA3 ( 17h00 - 21h00 )</div>
+                                <div  className='modal-info-content'>- nghỉ các ngày lễ 2/9 , 30/4 , 1/5 , tết 28 - 5 ( âm lịch ) nếu làm _ 30 000 / 1 giờ</div>
+
+                                <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td>15.7 _ CA2</td>
+                                        <td>...</td>
+                                    </tr>
+                                    <tr>
+                                        <td>16.7 _ CA2</td>
+                                        <td>...</td>
+                                    </tr>
+                                    <tr>
+                                        <td>17.7 _ CA2</td>
+                                        <td>...</td>
+                                    </tr>
+                                    <tr>
+                                        <td>18.7 _ CA2</td>
+                                        <td>...</td>
+                                    </tr>
+                                    <tr>
+                                        <td>19.7 _ CA2</td>
+                                        <td>...</td>
+                                    </tr>
+                                    <tr >
+                                        <td className='end-luong font-weight-bold'>tổng : <span>AS</span> : ... </td>
+                                        <td className='enluong' >...</td>
+                                    </tr>
+                                </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    }                   
                     </div>
+
 
                     {/* modal */}
                     {this.state.modal === true && 
