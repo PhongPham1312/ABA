@@ -70,7 +70,7 @@ class MarkManage extends Component {
                     {/* list user option */}
                     <div className='user-container'>
                         <ul>
-                            <li onClick={() => this.gotolink('user-manage')} >NHÂN VIÊN</li>
+                            <li onClick={() => this.gotolink('user-manage')} >NHÂN SỰ</li>
                             <li onClick={() => this.gotolink('mark-manage')} className={url === true ? 'li1' : ''}>SỈ DẮT MỐI</li>
                             <li onClick={() => this.gotolink('customer-manage')} className=''>KHÁCH HÀNG</li>
                         </ul>

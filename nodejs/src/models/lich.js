@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Lich.init({
     userid: DataTypes.STRING,
-    ngay: DataTypes.INTEGER,
+    day: DataTypes.INTEGER,
     ca: DataTypes.INTEGER,
   }, {
     sequelize,

@@ -26,7 +26,7 @@ export const YesNoObj = {
 }
 
 export const listnamelink  = [
-    {name: 'NHÂN VIÊN', link: '/system/user-manage'},
+    {name: 'NHÂN SỰ', link: '/system/user-manage'},
     {name: 'SỈ DẮT MỐI', link: '/system/mark-manage'},
     {name: 'KHÁCH HÀNG', link: '/system/customer-manage'},
     {name: 'KHO HÀNG', link: '/system/kho-manage'},

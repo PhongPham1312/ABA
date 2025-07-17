@@ -80,6 +80,7 @@ let initWebRoutes = (app) => {
     router.delete('/api/delete-tm', tmController.deleteTM);
 
     router.post('/api/create-lich', lichController.handleCreateLich);
+    router.get('/api/get-lich-tuan-hientai', lichController.getLichTuanHienTai);
 
  
     return app.use("/", router);
