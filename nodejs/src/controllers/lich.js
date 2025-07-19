@@ -1,31 +1,40 @@
 import Lich from '../services/lich'
-const handleCreateLich = async (req, res) => {
-    const result = await Lich.saveLichUserService(req.body);
-    return res.status(200).json(result);
-};
-
-const getLichTuanHienTai = async (req, res) => {
-  try {
-    const userid = req.query.userid;
-    if (!userid) {
-      return res.status(400).json({
-        errCode: 1,
-        message: 'Thiếu userid'
-      });
+const createOrUpdateLich = async (req, res) => {
+    try {
+        const data = req.body;
+        const result = await Lich.createOrUpdateLich(data);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Server error'
+        });
     }
-
-    const result = await Lich.getLichTuanHienTaiService(userid);
-
-    return res.status(200).json(result);
-  } catch (error) {
-    return res.status(500).json({
-      errCode: -1,
-      message: 'Lỗi server'
-    });
-  }
 };
+
+const getLichByUserAndRange = async (req, res) => {
+    try {
+        const {userId, startDate, endDate} = req.query;
+        const result = await Lich.getLichByUserAndRange(userId, startDate, endDate);
+        return res.status(200).json(result);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Server error'
+        });
+    }
+};
+
+const handleGetLichByUser = async (req, res) => {
+  const userId = req.query.userId;
+  const result = await Lich.getLichByUser(userId);
+  return res.status(200).json(result);
+}
 
 module.exports = {
-    handleCreateLich: handleCreateLich,
-    getLichTuanHienTai: getLichTuanHienTai
+    createOrUpdateLich: createOrUpdateLich,
+    getLichByUserAndRange: getLichByUserAndRange,
+    handleGetLichByUser:handleGetLichByUser
 }

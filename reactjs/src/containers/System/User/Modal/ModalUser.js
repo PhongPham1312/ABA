@@ -2,26 +2,28 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import Select from 'react-select';
+import { getAllPosition, getAllJob, createUser } from '../../../../services/userService';
+import { toast } from 'react-toastify';
 
 class ModalUser extends Component {
     constructor(props){
         super(props)
         this.state = {
-
+            name: '',
+            phone: '',
+            password: '',
+            ListPosition: [],
+            ListJob: [],
+            selectPosition: '',
+            selectJob: ''
         }
     }
 
-    componentDidMount() {
-
+    async componentDidMount() {
+        await this.getalljob()
+        await this.getallposition()
     }
     
-    // check input phone zalo
-    handleCheckboxChange = (e) => {
-        this.setState({
-            [e.target.name]: e.target.checked
-        });
-    }
-
      gotolink = (link) =>
     {
         if ( this.props.history )
@@ -30,150 +32,163 @@ class ModalUser extends Component {
         }
     }
 
+    // position
+    getallposition = async () => {
+        let res = await getAllPosition();
+        if(res && res?.errCode === 0){
+            let options = res.data.map(item => ({
+                label: item.name,
+                value: item.id,
+            }));
+            this.setState({
+                ListPosition: options
+            })
+        }
+        else this.setState({
+            ListPosition: []
+        })
+    }
+
+    // job
+    getalljob = async () => {
+        let res = await getAllJob();
+        if(res && res?.errCode === 0){
+            let options = res.data.map(item => ({
+                label: item.name,
+                value: item.id,
+            }));
+            this.setState({
+                ListJob: options
+            })
+        }
+        else this.setState({
+            ListJob: []
+        })
+    }
+
+
+    // xử lý nhập
+    handleInputChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        });
+    }
+
+    // Handle Select
+    handleChangeSelect = (selectedOption, type) => {
+        this.setState({
+            [type]: selectedOption
+        });
+    }
+
+    checkValue = () => {
+        const { name, phone, selectJob, selectPosition } = this.state;
+        if (!name) {
+            window.confirm("Bạn chưa nhập tên!");
+            return false;
+        }
+        if (!phone) {
+            window.confirm("Bạn chưa nhập số điện thoại!");
+            return false;
+        }
+        if (!selectPosition || !selectPosition.value) {
+            window.confirm("Bạn chưa chọn chức vụ!");
+            return false;
+        }
+        if (!selectJob || !selectJob.value) {
+            window.confirm("Bạn chưa chọn vị trí!");
+            return false;
+        }
+        return true;
+    };
+
+    // XỬ LÝ PASSWORD
+    gopTenVaSoCuoi = (name, phone) => {
+        if (!name || !phone) return '';
+            // Lấy 4 số cuối từ phone (chỉ lấy số)
+            const phoneDigits = phone.replace(/\D/g, '');
+            const soCuoi = phoneDigits.slice(-4);
+            return `${name}${soCuoi}`;
+    };
+
+
+    
+    handleAdd = async () => {
+        if(this.checkValue()){
+            let res = await createUser({
+                name: this.state.name,
+                phone: this.state.phone,
+                password: this.gopTenVaSoCuoi(this.state.name, this.state.phone),
+                role: this.state.selectPosition.value,
+                job: this.state.selectJob.value
+            })
+
+            if(res && res?.errCode === 0){
+                toast.success('thêm thành công')
+                this.props.onmodaluser('')
+                await this.props.getalluser()
+            }
+            else{
+                toast.error('thêm không thành công')
+                this.props.onmodaluser('')
+            }
+        }
+    }
+
 
     render() {
         return (
            <div className='modal-user'>
-                        <div className='modal-user-container'>
-                            <div className='modal-content-ss'>
+                       <div className='modal-user-add-container'>
+                            <div className='close'><i class="fa-solid fa-circle-xmark" onClick={() => this.props.onmodaluser('')}></i></div>
+                            <div className='header'>{this.props?.header}</div>
 
-                                {/* close */}
-                                <span className='close-modal' onClick={this.handleOnModal}>x</span>
-
-                                <div className='modal-user-header'>THÊM THÀNH VIÊN</div>
-                                
-                                {/* form thông tin */}
-                                <div className='form-info'>
-                                    {/* name */}
-                                    <div className='input-info'>
-                                        <label>Tên  </label>
-                                        <input type='text'
-                                         placeholder='Nhập tên thành viên'
-                                         name='name'
-                                         id='name'
-                                         value={this.state.name}
-                                         onChange={this.handleInputChange}
-                                         />
-                                         
-                                    </div>
-
-                                    {/* phone */}
-                                    <div className='input-info'>
-                                        <label className='dt'>Điện thoại</label>
-                                        <input type='text'
-                                         placeholder='Nhập số điện thoại thành viên'
-                                         name='phone'
-                                         id='phone'
-                                         value={this.state.phone}
-                                         onChange={this.handleInputChange}
-                                         />
-                                    </div>
-                                    <div className="input-check">
-                                            <input
-                                                type="checkbox"
-                                                id="hasZalo"
-                                                name="hasZalo"
-                                                checked={this.state.hasZalo}
-                                                onChange={this.handleCheckboxChange}
-                                            />
-                                            <label htmlFor="hasZalo">Số này có Zalo</label>
-                                        </div>
-                                </div>
-
-                                <div className='form-info'>
-                                    {/* zalo */}
-                                    <div className='input-info'>
-                                            <label>Zalo</label>
-                                            <input
-                                                type='text'
-                                                placeholder='Nhập Zalo'
-                                                name='zalo'
-                                                id='zalo'
-                                                value={this.state.zalo}
-                                                onChange={this.handleInputChange}
-                                                disabled={this.state.hasZalo} // ⛔ khóa khi đang check
-                                            />
-                                    </div>
-
-                                    {/* chức vụ */}
-                                    <div className='input-info mt-1'>
-                                        <label>Chức vụ</label>
-                                        <Select
-                                            value={this.state.selectedPosition}
-                                            onChange={(selected) => this.handleChangeSelect(selected, 'position')}
-                                            options={this.state.listPosition}
-                                            placeholder="Chọn chức vụ"
-                                        />
-                                    </div>
-
-                                    {/* công việc */}
-                                    <div className='input-info'>
-                                        <label>Vị trí</label>
-                                        <Select
-                                            value={this.state.selectedJob}
-                                            onChange={(selected) => this.handleChangeSelect(selected, 'job')}
-                                            options={this.state.listJob}
-                                            placeholder="Chọn vị trí"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* add cccd */}
-                               <div className='add-cccd'>
-                                    <div className='cccd-t'>
-                                        <label>Ảnh mặt trước</label>
-                                        <label htmlFor="upload-front" className="upload-icon">
-                                            <i className="fas fa-upload"></i>
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="upload-front"
-                                            accept="image/*"
-                                            hidden
-                                            onChange={(event) => this.handleOnchangeImg(event, 'img-t')}
-                                        />
-                                        {this.state.frontFileName && (
-                                            <span className="file-name">{this.state.frontFileName}</span>
-                                        )}
-                                    </div>
-
-                                    <div className='cccd-s'>
-                                        <label>Ảnh mặt sau</label>
-                                        <label htmlFor="upload-back" className="upload-icon">
-                                            <i className="fas fa-upload"></i>
-                                        </label>
-                                        <input
-                                            type="file"
-                                            id="upload-back"
-                                            accept="image/*"
-                                            hidden
-                                            onChange={(event) => this.handleOnchangeImg(event, 'img-s')}
-                                        />
-                                        {this.state.backFileName && (
-                                            <span className="file-name">{this.state.backFileName}</span>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* show error message */}
-                                {this.state.showMsg !== null && 
-                                    <div className='error-message'>
-                                        {this.state.showMsg}
-                                </div>
-                                }
-
-                                {/* btn */}
-                                <div className='div-btn'>
-                                    <button className="btn-add-user" 
-                                    onClick={this.handleAddUser}>
-                                         Thêm
-                                    </button>
-                                </div>
-
+                            {/* form input name */}
+                            <div className='modal-form-input'>
+                                <label>tên</label>
+                                <input type='text' name='name' id='name' 
+                                onChange={this.handleInputChange}
+                                />
                             </div>
 
-                        </div>
-                    </div>
+                             {/* form input phone */}
+                            <div className='modal-form-input'>
+                                <label>điện thoại</label>
+                                <input type='text' name='phone' id='phone' 
+                                onChange={this.handleInputChange}
+                                />
+                            </div>
+
+                             {/* form input phone */}
+                            <div className='modal-form-input'>
+                                <label>chức vụ</label>
+                                <Select
+                                    value={this.state.selectPosition}
+                                    onChange={(option) => this.handleChangeSelect(option, 'selectPosition')}
+                                    options={this.state.ListPosition}
+                                    placeholder="Chọn chức vụ"
+                                />
+                            </div>
+
+                            {/* form input phone */}
+                            <div className='modal-form-input'>
+                                <label>vị trí</label>
+                                <Select
+                                    value={this.state.selectJob}
+                                    onChange={(option) => this.handleChangeSelect(option, 'selectJob')}
+                                    options={this.state.ListJob}
+                                    placeholder="Chọn vị trí"
+                                />
+                            </div>
+
+                            {/* btn */}
+                            <div className='btn-modal'>
+                               <div onClick={this.handleAdd}>thêm</div>
+                            </div>
+
+                            
+                       </div>
+            </div>
         );
     }
 

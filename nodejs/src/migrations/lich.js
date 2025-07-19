@@ -12,10 +12,19 @@ module.exports = {
       userid: {
         type: Sequelize.STRING
       },
-      day: {
+      ngay: {
         type: Sequelize.STRING
       },
-       ca: {
+       ca1: {
+        type: Sequelize.STRING
+      },
+      ca2: {
+        type: Sequelize.STRING
+      },
+      ca3: {
+        type: Sequelize.STRING
+      },
+      ca4: {
         type: Sequelize.STRING
       },
       createdAt: {

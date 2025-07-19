@@ -12,6 +12,7 @@ import linhkiendonController from '../controllers/linhkiendonController'
 import ASController from '../controllers/ASController'
 import tmController from '../controllers/tmController'
 import lichController from '../controllers/lich'
+import congthem from '../controllers/congthem'
 
 let router = express.Router();
 
@@ -79,8 +80,12 @@ let initWebRoutes = (app) => {
     router.get('/api/get-all-tm-by-ngay', tmController.getGroupByDateService);
     router.delete('/api/delete-tm', tmController.deleteTM);
 
-    router.post('/api/create-lich', lichController.handleCreateLich);
-    router.get('/api/get-lich-tuan-hientai', lichController.getLichTuanHienTai);
+    router.post('/api/create-lich', lichController.createOrUpdateLich);
+    router.get('/api/get-lich-by-user', lichController.getLichByUserAndRange);
+    router.get('/api/get-lich-by-user-all', lichController.handleGetLichByUser);
+    router.post('/api/congthem', congthem.handleCreateCongthem);
+    router.get('/api/congthem', congthem.handleGetCongthemByUserAndNgay);
+
 
  
     return app.use("/", router);

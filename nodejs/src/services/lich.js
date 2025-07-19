@@ -1,118 +1,112 @@
 import db from '../models';
 import { Op } from 'sequelize';
-const getWeekRange = (date) => {
-  const d = new Date(date);
-  const day = d.getDay();
-  const diffToMonday = day === 0 ? -6 : 1 - day;
-  const monday = new Date(d);
-  monday.setDate(d.getDate() + diffToMonday);
+const createOrUpdateLich = async (data) => {
+    try {
+        for (let item of data) {
+            const existing = await db.Lich.findOne({
+                where: {
+                    userid: item.userId,
+                    ngay: item.ngay
+                }
+            });
 
-  const weekDays = [];
-  const thuNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
-
-  for (let i = 0; i < 7; i++) {
-    const curr = new Date(monday);
-    curr.setDate(monday.getDate() + i);
-    const day = curr.getDate();
-    const month = curr.getMonth() + 1;
-    const year = curr.getFullYear();
-    const thu = thuNames[curr.getDay()];
-    weekDays.push(`${thu} _ ${day}.${month}.${year}`);
-  }
-
-  return weekDays;
-};
-
-const saveLichUserService = async (data) => {
-  try {
-    if (!data || data.length === 0) {
-      return {
-        errCode: 1,
-        message: 'Không có dữ liệu lịch làm để lưu'
-      };
-    }
-
-    const userid = data[0].userid;
-
-    // → lấy toàn bộ các tuần chứa các ngày gửi lên
-    let allDaysToDelete = new Set();
-
-    data.forEach(item => {
-      const parts = item.day.split(' _ ')[1]; // lấy phần 15.7.2025
-      const [day, month, year] = parts.split('.').map(Number);
-      const jsDate = new Date(year, month - 1, day);
-      const weekDays = getWeekRange(jsDate);
-      weekDays.forEach(d => allDaysToDelete.add(d));
-    });
-
-    const daysArray = Array.from(allDaysToDelete);
-
-    // → xoá lịch làm trong những ngày đó
-    await db.Lich.destroy({
-      where: {
-        userid,
-        day: {
-          [Op.in]: daysArray
+            if (existing) {
+                // update
+                await db.Lich.update({
+                    ca1: item.ca1,
+                    ca2: item.ca2,
+                    ca3: item.ca3,
+                    ca4: item.ca4,
+                }, {
+                    where: { userid: item.userId, ngay: item.ngay }
+                });
+            } else {
+                // create
+                await db.Lich.create({
+                    userid: item.userId,
+                    ngay: item.ngay,
+                    ca1: item.ca1,
+                    ca2: item.ca2,
+                    ca3: item.ca3,
+                    ca4: item.ca4,
+                });
+            }
         }
-      }
-    });
 
+        return {
+            errCode: 0,
+            message: 'OK'
+        };
 
-    // → tạo lại
-    await db.Lich.bulkCreate(data);
-
-    return {
-      errCode: 0,
-      message: 'Cập nhật lịch làm thành công!'
-    };
-  } catch (error) {
-    console.error('saveLichUserService error:', error);
-    return {
-      errCode: -1,
-      message: 'Lỗi server khi lưu lịch làm'
-    };
-  }
+    } catch (error) {
+        console.error(error);
+        throw error;
+    }
 };
 
-
-const getLichTuanHienTaiService = async (userid) => {
-    console.log(userid)
-
+ const getLichByUserAndRange = async (userId, startDate, endDate) => {
   try {
-    if (!userid) {
+    if (!userId || !startDate || !endDate) {
       return {
         errCode: 1,
-        message: 'Thiếu userid'
+        errMessage: 'Thiếu userId hoặc ngày bắt đầu/kết thúc'
       };
     }
-
-    const today = new Date();
-    const weekDays = getWeekRange(today);
 
     const data = await db.Lich.findAll({
       where: {
-        userid,
-        day: {
-          [Op.in]: weekDays
+        userid: userId,
+        ngay: {
+          [Op.between]: [startDate, endDate]
         }
       },
-      order: [['day', 'ASC'], ['ca', 'ASC']]
+      order: [['ngay', 'ASC']]
     });
 
     return {
       errCode: 0,
       data
     };
-  } catch (error) {
-    console.error('getLichTuanHienTaiService error:', error);
+
+  } catch (e) {
+    console.error(e);
     return {
       errCode: -1,
-      message: 'Lỗi server khi lấy lịch tuần hiện tại'
+      errMessage: 'Lỗi server'
+    };
+  }
+};
+
+const getLichByUser = async (userId) => {
+  try {
+    if (!userId) {
+      return {
+        errCode: 1,
+        errMessage: 'Missing userId'
+      };
+    }
+
+    const lich = await db.Lich.findAll({
+      where: { userid: userId },
+      order: [['ngay', 'DESC']],
+      raw: true,
+    });
+
+    return {
+      errCode: 0,
+      data: lich,
+    };
+  } catch (e) {
+    console.log(e);
+    return {
+      errCode: -1,
+      errMessage: 'Error from server'
     };
   }
 };
 
 module.exports = {
-    saveLichUserService : saveLichUserService,
-    getLichTuanHienTaiService: getLichTuanHienTaiService
+    createOrUpdateLich : createOrUpdateLich,
+    getLichByUserAndRange: getLichByUserAndRange,
+    getLichByUser: getLichByUser
 }

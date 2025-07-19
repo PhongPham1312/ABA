@@ -1,7 +1,7 @@
 import axios from '../axios'
 
 // create
-const createLich = (data) => {
+const createOrUpdateLich = (data) => {
     return axios.post(`/api/create-lich`, data);
 }
 
@@ -11,6 +11,18 @@ const getlichbyuser = (user) => {
     );
 }
 
+const getLichByUserAndRange = (userId, startDate, endDate) => {
+  return axios.get('/api/get-lich-by-user', {
+    params: { userId, startDate, endDate }
+  });
+};
+
+const getLichByUser = (userId) => {
+  return axios.get(`/api/get-lich-by-user-all`, {
+    params: { userId },
+  });
+};
+
 export {
-createLich, getlichbyuser
+createOrUpdateLich, getlichbyuser, getLichByUserAndRange, getLichByUser
 }

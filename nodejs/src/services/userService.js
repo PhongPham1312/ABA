@@ -10,7 +10,7 @@ const hashPassword = async (password) => {
 // create user
 const createUserService = async (data) => {
     try {
-        const { name, phone, password, zalo, image_t, image_s, role , job } = data;
+        const { name, phone, password, role , job } = data;
 
         // Kiểm tra các trường bắt buộc
         if (!name || !phone || !password) {
@@ -35,12 +35,9 @@ const createUserService = async (data) => {
             name: name,
             phone: phone,
             password: hashedPassword,
-            zalo: zalo || phone,
-            image_t: image_t || null,
-            image_s: image_s || null,
             role: role || null, // mặc định là 'user' nếu không truyền vào
             job: job || null, // mặc định là 'user' nếu không truyền vào
-            status: true, 
+            status: true, // mặc định là 'user' nếu không truyền vào
         });
 
         return {
@@ -84,7 +81,7 @@ let handleUserLogin = (phone, password) => {
 
             if (isExist) {
                 let user = await db.User.findOne({
-                    attributes: ['id', 'name', 'phone', 'role', 'password'],
+                    attributes: ['id', 'name', 'phone', 'role', 'job', 'password'],
                     where: { phone: phone , 
                         status: true // chỉ lấy user chưa bị ẩn
                     },
@@ -126,7 +123,7 @@ const getAllUser = async () => {
         let users = await db.User.findAll({
             order: [['createdAt', 'DESC']],
             where: { status: true }, // chỉ lấy người dùng chưa bị ẩn
-            attributes: { exclude: ['password', 'image_t', 'image_s'] }, // ❌ Không trả về password
+            attributes: { exclude: ['password'] }, // ❌ Không trả về password
             include: [
                 {
                     model: db.Position,

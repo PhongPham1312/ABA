@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Lich extends Model {
+  class Congthem extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -12,16 +12,14 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
     }
   };
-  Lich.init({
+  Congthem.init({
     userid: DataTypes.STRING,
     ngay: DataTypes.INTEGER,
-    ca1: DataTypes.INTEGER,
-    ca2: DataTypes.INTEGER,
-    ca3: DataTypes.INTEGER,
-    ca4: DataTypes.INTEGER,
+    congthem: DataTypes.INTEGER,
+    thanhtien: DataTypes.INTEGER,
   }, {
     sequelize,
-    modelName: 'Lich',
+    modelName: 'Congthem',
   });
-  return Lich;
+  return Congthem;
 };
