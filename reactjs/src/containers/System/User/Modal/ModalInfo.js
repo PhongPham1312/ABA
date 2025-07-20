@@ -4,23 +4,67 @@ import { withRouter } from 'react-router';
 import { getAllPosition, getAllJob } from '../../../../services/userService';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { getLichByUser } from '../../../../services/lich';
-import ModalCongthem from './ModalCongthem';
+import { getLichByUser, updateLichStatus } from '../../../../services/lich';
+import { getallcongthem } from '../../../../services/congthem';
 
 class ModalInfo extends Component {
     constructor(props){
         super(props)
         this.state = {
-             lichTheoTuan: {}, // { week: [lich1, lich2, ...] },
+             lichTheoTuan: [], // { week: [lich1, lich2, ...] },
               lichDaLuu: [],
               onAddCongthem : false,
-              selectedLich: null // dùng để xác định item đang được chọn
+              selectedLich: null, // dùng để xác định item đang được chọn
+              congThemTheoNgay: [],
+              ngayDaXacNhan: [] // lưu danh sách ngày đã xác nhận
         }
     }
 
     async componentDidMount() {
         console.log(this.props.user.id)
         await this.getlichbyuser(this.props.user.id)
+        await this.getallcongthembyuser(this.props.user.id);
+        this.mergeCongThem();
+    }
+
+    tinhTongTienNgay = (item) => {
+        let tienCa = 0;
+        if (item.ca1 === '1') tienCa += 17000;
+        if (item.ca2 === '1') tienCa += 17000;
+        if (item.ca3 === '1') tienCa += 17000;
+        if (item.ca4 === '1') tienCa += 17000;
+
+        const congThem = this.state.congThemTheoNgay.find(ct => ct.ngay === item.ngay);
+        const tienCongThem = congThem ? parseInt(congThem.thanhtien || 0) : 0;
+
+        return tienCa + tienCongThem;
+    };
+
+
+
+    mergeCongThem = () => {
+        const { lichTheoTuan, congThemTheoNgay } = this.state;
+
+        const lichMoi = lichTheoTuan.map((ngay) => {
+            const cong = congThemTheoNgay.find((c) => c.ngay === ngay.ngay);
+            return {
+            ...ngay,
+            congthem: cong ? cong.congthem : null
+            };
+        });
+
+        this.setState({ lichTheoTuan: lichMoi });
+        };
+
+    getallcongthembyuser = async (id) => {
+        let res = await getallcongthem(id)
+        console.log(res)
+        if (res && res.errCode === 0) {
+            this.setState({ congThemTheoNgay: res.data });
+        } else {
+            this.setState({ congThemTheoNgay: [] });
+        }
+        console.log(this.state.congThemTheoNgay)
     }
     
      gotolink = (link) =>
@@ -72,6 +116,8 @@ class ModalInfo extends Component {
             this.setState({ lichDaLuu: res.data });
         }
         else this.setState({ lichDaLuu: [] });
+
+        
     }
 
     // viết tắt chức vụ
@@ -120,35 +166,61 @@ class ModalInfo extends Component {
         return result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     }
 
-    renderLichTuan = (tuan, index) => {
-        // Lọc các ngày có ít nhất 1 ca
-        const ngayCoCa = tuan.filter(item =>
-            item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1'
-        );
+    onaddcongthem = (item, e) => {
+        const rect = e.target.getBoundingClientRect();
+        this.setState({
+            onAddCongthem: true,
+            selectedItem: item,
+            modalX: rect.left,
+            modalY: rect.bottom,
+        });
+    }
 
-        if (!ngayCoCa || ngayCoCa.length === 0) return null; // Nếu tuần không có ngày nào có ca, bỏ qua luôn
-
-        return (
-            <div key={index}>
-                <table className="table table-bordered">
-                    <tbody>
-                        {ngayCoCa.map((item, i) => (
-                            <tr key={i}>
-                                <td>{this.dinhDangNgay(item.ngay)} _ {this.gopCa(item)}</td>
-                                <td></td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
+    closeModalCongthem = () => {
+        this.setState({
+            onAddCongthem: false,
+            selectedItem: null,
+        });
+    }
+        getThanhTienTheoNgay = (ngay) => {
+        const record = this.state.congThemTheoNgay.find(item => item.ngay === ngay);
+        return record ? record.thanhtien : 0;
     };
 
-    onaddcongthem = (item) => {
-        this.setState(prevState => ({
-            selectedLich: prevState.selectedLich && prevState.selectedLich.ngay === item.ngay ? null : item
-        }));
+    tinhSoCa = (item) => {
+        let count = 0;
+        if (item.ca1 === '1') count++;
+        if (item.ca2 === '1') count++;
+        if (item.ca3 === '1') count++;
+        if (item.ca4 === '1') count++;
+        return count;
+    };
+
+    formatNumberWithSpace = (number) => {
+        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    };
+
+    handleXacNhan = async (item) => {
+        const { id: userid, ngay } = item;
+
+    try {
+        // Gọi API để set status = true
+        const res = await updateLichStatus(userid, ngay);
+
+        if (res && res.data && res.data.errCode === 0) {
+            // Cập nhật vào state để hiện tổng tiền
+            this.setState(prevState => ({
+                ngayDaXacNhan: [...prevState.ngayDaXacNhan, ngay]
+            }));
+        } else {
+            toast.error('Cập nhật trạng thái thất bại!');
+        }
+    } catch (error) {
+        console.error(error);
+        toast.error('Lỗi khi xác nhận!');
     }
+    };
+
 
     render() {
         const cacTuan = this.chiaLichTheoTuan(this.state.lichDaLuu || []);
@@ -162,27 +234,58 @@ class ModalInfo extends Component {
                     <div className='modal-info-content'>- lương : <span>{this.formatNumberWithSpace(this.props?.user?.jobUser?.money)}</span> / 1 giờ x 4 tiếng = <span>{this.multiplyAndFormat(this.props?.user?.jobUser?.money, 4)}</span> </div>
                             <div className='modal-info-content'>- thời gian : CA1 ( 9h00 - 13h00 ) , CA2 ( 13h00 - 17h00 ) , CA3 ( 17h00 - 21h00 ) </div>
                             <div className='modal-info-content'> - nghỉ các ngày lễ 2/9 , 30/4 , 1/5 , tết 28 - 5 ( âm lịch ) nếu làm _ 30 000 / 1 giờ</div>
-                              {cacTuan.map((tuan, index) => {
-                                    const ngayCoCa = tuan.filter(item =>
-                                    item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1'
-                                );
-
-                                if (!ngayCoCa || ngayCoCa.length === 0) return null;
-
+                             
+                             {cacTuan.map((tuan, index) => {
                                 return (
                                     <div key={index}>
                                         <table className="table table-bordered">
                                             <tbody>
-                                                {ngayCoCa.map((item, i) => (
+                                                {tuan.map((item, i) => (
                                                     <tr key={i}>
-                                                        <td className='lichtuan-item' onClick={() => this.onaddcongthem(item)}>{this.dinhDangNgay(item.ngay)} _ {this.gopCa(item)} <span className='themcongthem'><i class="fa-solid fa-plus"></i></span>
-                                                            {this.state.onAddCongthem === true && 
-                                                                <ModalCongthem 
-                                                                    onaddcongthem = {this.onaddcongthem}
-                                                                />
+                                                        <td
+                                                            className="lichtuan-item"
+                                                            onClick={(e) => this.onaddcongthem(item, e)}
+                                                        >
+                                                            {this.dinhDangNgay(item.ngay)}
+                                                            {
+                                                                (item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1') &&
+                                                                ` _ ${this.gopCa(item)}`
                                                             }
+                                                            {
+                                                                Array.isArray(this.state.congThemTheoNgay) &&
+                                                                this.state.congThemTheoNgay
+                                                                    .filter(ct => ct.ngay === item.ngay)
+                                                                    .map((ct, idx) => {
+                                                                        const coCa = item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1';
+                                                                        return (
+                                                                            <span key={idx}>
+                                                                                {coCa ? ' + ' : ' _ '}
+                                                                                {ct.congthem}
+                                                                            </span>
+                                                                        );
+                                                                    })
+                                                            }
+                                                            <span className="themcongthem">
+                                                                <i className="fa-solid fa-pen"></i>
+                                                            </span>
+                                                             {/* Nút xác nhận chỉ hiện nếu có ca hoặc cộng thêm */}
+                                                            {
+                                                                (item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1' ||
+                                                                this.state.congThemTheoNgay.some(ct => ct.ngay === item.ngay)) && (
+                                                                    <span className='xacnhan' onClick={() => this.handleXacNhan(item)}>
+                                                                        <i className="fa-solid fa-right-from-bracket"></i>
+                                                                    </span>
+                                                                )
+                                                            }
+                                                                                                                                                                        </td>
+                                                        <td>
+                                                            {/* Hiện tổng tiền chỉ khi đã xác nhận */}
+                                                                {
+                                                                    this.state.ngayDaXacNhan.includes(item.ngay) && (
+                                                                        <span className='tien'> {this.tinhTongTienNgay(item)}</span>
+                                                                    )
+                                                                }
                                                         </td>
-                                                        <td></td>
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -190,6 +293,8 @@ class ModalInfo extends Component {
                                     </div>
                                 );
                             })}
+
+
 
                             
                 </div>

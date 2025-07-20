@@ -105,8 +105,26 @@ const getLichByUser = async (userId) => {
   }
 };
 
+const updateTrangThaiLich = async (userid, ngay) => {
+    try {
+        const lich = await db.Lich.findOne({ where: { userid, ngay } });
+        if (!lich) {
+            return res.status(404).json({ errCode: 1, errMessage: 'Không tìm thấy lịch' });
+        }
+
+        lich.status = true;
+        await lich.save();
+
+        return res.status(200).json({ errCode: 0, message: 'Cập nhật thành công' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ errCode: -1, message: 'Lỗi server' });
+    }
+};
+
 module.exports = {
     createOrUpdateLich : createOrUpdateLich,
     getLichByUserAndRange: getLichByUserAndRange,
-    getLichByUser: getLichByUser
+    getLichByUser: getLichByUser,
+    updateTrangThaiLich: updateTrangThaiLich
 }

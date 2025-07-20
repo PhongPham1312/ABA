@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     ca2: DataTypes.INTEGER,
     ca3: DataTypes.INTEGER,
     ca4: DataTypes.INTEGER,
+    status: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Lich',

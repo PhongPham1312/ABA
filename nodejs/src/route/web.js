@@ -85,7 +85,7 @@ let initWebRoutes = (app) => {
     router.get('/api/get-lich-by-user-all', lichController.handleGetLichByUser);
     router.post('/api/congthem', congthem.handleCreateCongthem);
     router.get('/api/congthem', congthem.handleGetCongthemByUserAndNgay);
-
+    router.post('/api/update-lich-status', lichController.updateTrangThaiLich);
 
  
     return app.use("/", router);

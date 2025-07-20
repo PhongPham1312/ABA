@@ -33,8 +33,15 @@ const handleGetLichByUser = async (req, res) => {
   return res.status(200).json(result);
 }
 
+const updateTrangThaiLich = async (req, res) => {
+  let {userid, ngay} = req.query
+  const result = await Lich.updateTrangThaiLich(userid, ngay);
+  return res.status(200).json(result);
+}
+
 module.exports = {
     createOrUpdateLich: createOrUpdateLich,
     getLichByUserAndRange: getLichByUserAndRange,
-    handleGetLichByUser:handleGetLichByUser
+    handleGetLichByUser:handleGetLichByUser,
+    updateTrangThaiLich: updateTrangThaiLich
 }

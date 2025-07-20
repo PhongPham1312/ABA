@@ -38,17 +38,17 @@ const createCongthem = async (data) => {
     }
 };
 
-const getCongthemByUserAndNgay = async (userid, ngay) => {
+const getCongthemByUserAndNgay = async (userid) => {
     try {
-        if (!userid || !ngay) {
+        if (!userid) {
             return {
                 errCode: 1,
                 errMessage: "Thiếu userid hoặc ngày",
             };
         }
 
-        const cong = await db.Congthem.findOne({
-            where: { userid, ngay },
+        const cong = await db.Congthem.findAll({
+            where: { userid },
         });
 
         return {

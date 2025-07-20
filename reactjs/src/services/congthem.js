@@ -5,9 +5,9 @@ const createCongthem = (data) => {
     return axios.post(`/api/congthem`, data);
 }
 
-const getallcongthem = (user, ngay) => {
+const getallcongthem = (userid) => {
     return axios.get(`/api/congthem`, 
-        {params: { userid: user, ngay: ngay }}
+        {params: { userid }}
     );
 }
 

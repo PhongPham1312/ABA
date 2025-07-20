@@ -10,8 +10,7 @@ const handleCreateCongthem = async (req, res) => {
 };
 
 const handleGetCongthemByUserAndNgay = async (req, res) => {
-    const { userid, ngay } = req.query;
-    const result = await getCongthemByUserAndNgay(userid, ngay);
+    const result = await getCongthemByUserAndNgay(req.query.userid);
     return res.status(200).json(result);
 };
 

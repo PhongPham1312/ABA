@@ -23,6 +23,9 @@ const getLichByUser = (userId) => {
   });
 };
 
+ const updateLichStatus = (userid, ngay) => {
+    return axios.post('/api/update-lich-status', { userid, ngay });
+};
 export {
-createOrUpdateLich, getlichbyuser, getLichByUserAndRange, getLichByUser
+createOrUpdateLich, getlichbyuser, getLichByUserAndRange, getLichByUser, updateLichStatus
 }

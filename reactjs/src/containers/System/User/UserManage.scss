@@ -211,7 +211,6 @@
 .lichtuan-item{
     &:hover .themcongthem{
         display: inline;
-        position: relative;
     }
 
     .themcongthem{
@@ -221,13 +220,30 @@
         color: white;
         font-size: 10px;
         border-radius: 5px;
+        margin-left: 10px;
     }
-    .modal-congthem{
-        background-color: black;
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1001;
+
+    .xacnhan{
+        color: green;
+        margin-left: 10px;
+    }
+    .modal-congthem {
+        margin-top: 8px;
+        position: relative;
+        z-index: 10;
+        .modal-congthem-add-container{
+            display: flex;
+            input{
+                border: 1px solid black;
+                padding: 0 5px;
+            }
+
+            .them{
+                color: white;
+                padding: 5px ;
+                background-color: blue;
+                outline: none;
+            }
+        }
     }
 }

@@ -14,9 +14,10 @@ module.exports = (sequelize, DataTypes) => {
   };
   Congthem.init({
     userid: DataTypes.STRING,
-    ngay: DataTypes.INTEGER,
-    congthem: DataTypes.INTEGER,
-    thanhtien: DataTypes.INTEGER,
+    ngay: DataTypes.STRING,
+    congthem: DataTypes.STRING,
+    thanhtien: DataTypes.STRING,
+    status: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Congthem',
