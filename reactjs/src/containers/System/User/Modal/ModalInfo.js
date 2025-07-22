@@ -5,7 +5,8 @@ import { getAllPosition, getAllJob } from '../../../../services/userService';
 import { toast } from 'react-toastify';
 import moment from 'moment';
 import { getLichByUser, updateLichStatus } from '../../../../services/lich';
-import { getallcongthem } from '../../../../services/congthem';
+import { getallcongthem , updateStatusAll } from '../../../../services/congthem';
+import ModalCongthem from './ModalCongthem'
 
 class ModalInfo extends Component {
     constructor(props){
@@ -16,33 +17,33 @@ class ModalInfo extends Component {
               onAddCongthem : false,
               selectedLich: null, // dùng để xác định item đang được chọn
               congThemTheoNgay: [],
-              ngayDaXacNhan: [] // lưu danh sách ngày đã xác nhận
+              ngayDaXacNhan: [], // lưu danh sách ngày đã xác nhận
+              mocongthem: false,
+              xacnhanthanhtoan: false
         }
     }
 
     async componentDidMount() {
-        console.log(this.props.user.id)
         await this.getlichbyuser(this.props.user.id)
         await this.getallcongthembyuser(this.props.user.id);
-        this.mergeCongThem();
+        /* this.mergeCongThem(); */
     }
 
-    tinhTongTienNgay = (item) => {
+    tinhTongTienNgay = (item, money) => {
         let tienCa = 0;
-        if (item.ca1 === '1') tienCa += 17000;
-        if (item.ca2 === '1') tienCa += 17000;
-        if (item.ca3 === '1') tienCa += 17000;
-        if (item.ca4 === '1') tienCa += 17000;
+        if (item.ca1 === '1') tienCa += this.props?.user?.jobUser?.money * 4;
+        if (item.ca2 === '1') tienCa += this.props?.user?.jobUser?.money * 4;
+        if (item.ca3 === '1') tienCa += this.props?.user?.jobUser?.money * 4;
+        if (item.ca4 === '1') tienCa += this.props?.user?.jobUser?.money * 4;
 
         const congThem = this.state.congThemTheoNgay.find(ct => ct.ngay === item.ngay);
         const tienCongThem = congThem ? parseInt(congThem.thanhtien || 0) : 0;
-
         return tienCa + tienCongThem;
     };
 
 
 
-    mergeCongThem = () => {
+   /*  mergeCongThem = () => {
         const { lichTheoTuan, congThemTheoNgay } = this.state;
 
         const lichMoi = lichTheoTuan.map((ngay) => {
@@ -54,17 +55,15 @@ class ModalInfo extends Component {
         });
 
         this.setState({ lichTheoTuan: lichMoi });
-        };
+        }; */
 
     getallcongthembyuser = async (id) => {
         let res = await getallcongthem(id)
-        console.log(res)
         if (res && res.errCode === 0) {
             this.setState({ congThemTheoNgay: res.data });
         } else {
             this.setState({ congThemTheoNgay: [] });
         }
-        console.log(this.state.congThemTheoNgay)
     }
     
      gotolink = (link) =>
@@ -80,7 +79,7 @@ class ModalInfo extends Component {
 
         lichArray.forEach(item => {
             const dayMoment = moment(item.ngay);
-            const startOfWeek = dayMoment.clone().startOf('isoWeek'); // Thứ 2 của tuần
+            const startOfWeek = dayMoment.clone().startOf('week'); // CHỦ NHẬT là ngày bắt đầu
             const weekKey = startOfWeek.format('YYYY-MM-DD');
 
             if (!grouped[weekKey]) {
@@ -91,6 +90,7 @@ class ModalInfo extends Component {
 
         return Object.values(grouped); // Trả về mảng các tuần
     };
+
 
 
 
@@ -111,6 +111,7 @@ class ModalInfo extends Component {
 
 
     getlichbyuser = async (id) => {
+        console.log(id)
         let res = await getLichByUser(id);
         if(res && res.errCode === 0){
             this.setState({ lichDaLuu: res.data });
@@ -167,12 +168,8 @@ class ModalInfo extends Component {
     }
 
     onaddcongthem = (item, e) => {
-        const rect = e.target.getBoundingClientRect();
         this.setState({
             onAddCongthem: true,
-            selectedItem: item,
-            modalX: rect.left,
-            modalY: rect.bottom,
         });
     }
 
@@ -201,26 +198,58 @@ class ModalInfo extends Component {
     };
 
     handleXacNhan = async (item) => {
-        const { id: userid, ngay } = item;
+        const { userid, ngay } = item;
 
-    try {
-        // Gọi API để set status = true
-        const res = await updateLichStatus(userid, ngay);
+    // Gọi API để set status = true
+            const res = await updateLichStatus(userid, ngay);
+           /*  await updateStatusAll(userid, ngay); */
 
-        if (res && res.data && res.data.errCode === 0) {
-            // Cập nhật vào state để hiện tổng tiền
+            if (res && res.errCode === 0) {
+                // Cập nhật vào state để hiện tổng tiền
+                await this.getlichbyuser(this.props.user.id)
+                await this.getallcongthembyuser(this.props.user.id);
+                toast.success("cập nhật thành công")
+            } else {
+                toast.error('Cập nhật trạng thái thất bại!');
+            }
             this.setState(prevState => ({
                 ngayDaXacNhan: [...prevState.ngayDaXacNhan, ngay]
             }));
-        } else {
-            toast.error('Cập nhật trạng thái thất bại!');
-        }
-    } catch (error) {
-        console.error(error);
-        toast.error('Lỗi khi xác nhận!');
-    }
     };
 
+    onModalcongthem = (item) => {
+        this.setState({
+            mocongthem: !this.state.mocongthem,
+            usercongthem: item
+        })
+
+    }
+
+    tinhTongTienTuan = (tuan, money) => {
+        return tuan.reduce((tong, item) => {
+            console.log(money)
+            let tien = 0;
+
+            // Tính tiền các ca
+            if (item.ca1 === '1') tien += money * 4;
+            if (item.ca2 === '1') tien += money * 4;
+            if (item.ca3 === '1') tien += money * 4;
+            if (item.ca4 === '1') tien += money * 4;
+
+            // Tính tiền cộng thêm
+            const congThem = this.state.congThemTheoNgay.find(ct => ct.ngay === item.ngay);
+            const tienCongThem = congThem ? parseInt(congThem.thanhtien || 0) : 0;
+
+            return tong + tien + tienCongThem;
+        }, 0);
+    };
+
+
+    thanhtoan = () => {
+        this.setState({
+            xacnhanthanhtoan : !this.state.xacnhanthanhtoan
+        })
+    }
 
     render() {
         const cacTuan = this.chiaLichTheoTuan(this.state.lichDaLuu || []);
@@ -240,7 +269,8 @@ class ModalInfo extends Component {
                                     <div key={index}>
                                         <table className="table table-bordered">
                                             <tbody>
-                                                {tuan.map((item, i) => (
+                                                {tuan.sort((a, b) => new Date(a.ngay) - new Date(b.ngay))
+                                                    .map((item, i) => (
                                                     <tr key={i}>
                                                         <td
                                                             className="lichtuan-item"
@@ -266,12 +296,13 @@ class ModalInfo extends Component {
                                                                     })
                                                             }
                                                             <span className="themcongthem">
-                                                                <i className="fa-solid fa-pen"></i>
+                                                                <i className="fa-solid fa-pen" onClick={() => this.onModalcongthem(item)}></i>
                                                             </span>
                                                              {/* Nút xác nhận chỉ hiện nếu có ca hoặc cộng thêm */}
                                                             {
                                                                 (item.ca1 === '1' || item.ca2 === '1' || item.ca3 === '1' || item.ca4 === '1' ||
                                                                 this.state.congThemTheoNgay.some(ct => ct.ngay === item.ngay)) && (
+                                                                   !item.status &&
                                                                     <span className='xacnhan' onClick={() => this.handleXacNhan(item)}>
                                                                         <i className="fa-solid fa-right-from-bracket"></i>
                                                                     </span>
@@ -279,15 +310,19 @@ class ModalInfo extends Component {
                                                             }
                                                                                                                                                                         </td>
                                                         <td>
-                                                            {/* Hiện tổng tiền chỉ khi đã xác nhận */}
-                                                                {
-                                                                    this.state.ngayDaXacNhan.includes(item.ngay) && (
-                                                                        <span className='tien'> {this.tinhTongTienNgay(item)}</span>
-                                                                    )
-                                                                }
+                                                            {item.status ?  
+                                                                <span className='tien'> {this.formatNumberWithSpace(this.tinhTongTienNgay(item))}</span> : "..."
+                                                            }
                                                         </td>
                                                     </tr>
                                                 ))}
+                                                    <tr>
+                                                        <td className='thanhtoan'><div>tổng : ( AS : ... ) </div>{this.state.xacnhanthanhtoan === false && <span onClick={this.thanhtoan}>đã thanh toán</span>}</td>
+                                                        {this.state.xacnhanthanhtoan === true ? 
+                                                        <td><strong>{this.formatNumberWithSpace(this.tinhTongTienTuan(tuan, this.props?.user?.jobUser?.money))}</strong></td> :
+                                                        <td>... </td>    
+                                                    }
+                                                    </tr>
                                             </tbody>
                                         </table>
                                     </div>
@@ -295,7 +330,14 @@ class ModalInfo extends Component {
                             })}
 
 
-
+                            {this.state.mocongthem === true && 
+                                <ModalCongthem 
+                                    onModalcongthem = {this.onModalcongthem}
+                                    user = {this.state.usercongthem}
+                                    getlichbyuser = {this.getlichbyuser}
+                                    getallcongthembyuser = {this.getallcongthembyuser}
+                                />
+                            }
                             
                 </div>
             </div>

@@ -107,18 +107,48 @@ const getLichByUser = async (userId) => {
 
 const updateTrangThaiLich = async (userid, ngay) => {
     try {
+        // Cập nhật bảng Lich
         const lich = await db.Lich.findOne({ where: { userid, ngay } });
-        if (!lich) {
-            return res.status(404).json({ errCode: 1, errMessage: 'Không tìm thấy lịch' });
+        if (lich) {
+            lich.status = true;
+            await lich.save();
         }
 
-        lich.status = true;
-        await lich.save();
-
-        return res.status(200).json({ errCode: 0, message: 'Cập nhật thành công' });
+        return {
+            errCode: 0,
+            message: 'Đã cập nhật trạng thái'
+        };
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ errCode: -1, message: 'Lỗi server' });
+        return {
+            errCode: -1,
+            message: 'Lỗi server'
+        };
+    }
+};
+
+const capNhatEndTuan = async (userid, dsNgay) => {
+    try {
+        await db.Lich.update(
+            { endtuan: 1 },
+            {
+                where: {
+                    userid: userid,
+                    ngay: dsNgay
+                }
+            }
+        );
+
+        return {
+            errCode: 0,
+            errMessage: 'Cập nhật endtuan = 1 thành công'
+        };
+    } catch (e) {
+        console.error(e);
+        return {
+            errCode: -1,
+            errMessage: 'Lỗi khi cập nhật endtuan'
+        };
     }
 };
 
@@ -126,5 +156,6 @@ module.exports = {
     createOrUpdateLich : createOrUpdateLich,
     getLichByUserAndRange: getLichByUserAndRange,
     getLichByUser: getLichByUser,
-    updateTrangThaiLich: updateTrangThaiLich
+    updateTrangThaiLich: updateTrangThaiLich,
+    capNhatEndTuan: capNhatEndTuan
 }

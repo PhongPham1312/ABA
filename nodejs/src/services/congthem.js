@@ -64,8 +64,29 @@ const getCongthemByUserAndNgay = async (userid) => {
     }
 };
 
+const updateTrangThaiLichVaCongThem = async (userid, ngay) => {
+    try {
+        const lich = await db.Lich.findOne({ where: { userid, ngay } });
+        if (lich) {
+            lich.status = true;
+            await lich.save();
+        }
+
+        await db.Congthem.update(
+            { status: true },
+            { where: { userid, ngay } }
+        );
+
+        return { errCode: 0, message: 'Đã cập nhật trạng thái' };
+    } catch (error) {
+        console.error(error);
+        return { errCode: -1, message: 'Lỗi server' };
+    }
+};
+
 
 module.exports = {
     createCongthem: createCongthem,
-    getCongthemByUserAndNgay : getCongthemByUserAndNgay
+    getCongthemByUserAndNgay : getCongthemByUserAndNgay,
+    updateTrangThaiLichVaCongThem: updateTrangThaiLichVaCongThem
 }

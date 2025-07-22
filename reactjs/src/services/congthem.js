@@ -11,6 +11,10 @@ const getallcongthem = (userid) => {
     );
 }
 
+const updateStatusAll = (userid, ngay) => {
+    return axios.post('/api/update-status-all', { userid, ngay });
+};
+
 export {
-createCongthem, getallcongthem
+createCongthem, getallcongthem, updateStatusAll
 }

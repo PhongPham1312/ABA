@@ -20,7 +20,6 @@ const getLinhkienByDonmay = async (req, res) => {
 
 const deleteLinhkiendon = async (req, res) => {
     const id = req.query.id;
-    console.log(id)
     if (!id) {
         return res.status(400).json({
             errCode: 1,

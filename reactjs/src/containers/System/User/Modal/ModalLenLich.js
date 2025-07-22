@@ -237,12 +237,13 @@ class ModalLenLich extends Component {
                                     ))}
                                 </tbody>
                             </table>
+                            <div className='btn-modal'>
+                        <div onClick={this.handleSaveLichTuanToi}>Thêm</div>
+                    </div>
                         </>
                     )}
 
-                    <div className='btn-modal'>
-                        <div onClick={this.handleSaveLichTuanToi}>Thêm</div>
-                    </div>
+                    
 
                     {/* Danh sách tuần hiện tại */}
                     <h5>📅 Tuần hiện tại</h5>

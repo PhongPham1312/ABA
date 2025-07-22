@@ -34,14 +34,40 @@ const handleGetLichByUser = async (req, res) => {
 }
 
 const updateTrangThaiLich = async (req, res) => {
-  let {userid, ngay} = req.query
+  let {userid, ngay} = req.body
   const result = await Lich.updateTrangThaiLich(userid, ngay);
   return res.status(200).json(result);
 }
+
+// controller
+const xacNhanKetThucTuan = async (req, res) => {
+    try {
+        const { userid, dsNgay } = req.body;
+
+        if (!userid || !Array.isArray(dsNgay) || dsNgay.length === 0) {
+            return res.status(400).json({
+                errCode: 1,
+                errMessage: 'Thiếu userid hoặc danh sách ngày'
+            });
+        }
+
+        const result = await Lich.capNhatEndTuan(userid, dsNgay);
+
+        return res.status(200).json(result);
+    } catch (e) {
+        console.error(e);
+        return res.status(500).json({
+            errCode: -1,
+            errMessage: 'Lỗi server'
+        });
+    }
+};
+
 
 module.exports = {
     createOrUpdateLich: createOrUpdateLich,
     getLichByUserAndRange: getLichByUserAndRange,
     handleGetLichByUser:handleGetLichByUser,
-    updateTrangThaiLich: updateTrangThaiLich
+    updateTrangThaiLich: updateTrangThaiLich,
+    xacNhanKetThucTuan :xacNhanKetThucTuan
 }

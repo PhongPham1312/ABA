@@ -227,23 +227,60 @@
         color: green;
         margin-left: 10px;
     }
-    .modal-congthem {
-        margin-top: 8px;
-        position: relative;
-        z-index: 10;
+    
+}
+
+
+.modal-congthem {
+       position: fixed;
+       top: 50%;
+       left: 0;
+       right: 0;
+       display: flex;
+       justify-content: center;
         .modal-congthem-add-container{
+            width: 90%;
+            background-color: white;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
             display: flex;
+            padding: 5px 10px;
+            position: relative;
             input{
                 border: 1px solid black;
                 padding: 0 5px;
             }
 
-            .them{
-                color: white;
-                padding: 5px ;
-                background-color: blue;
-                outline: none;
+            .close-congthem{
+                color: red;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+
+            .congthem{
+                color: black;
+
+                span{
+                    color: white;
+                    background-color: rgba(0, 0, 255, 0.8);
+                    padding: 5px 7px;
+                    border-radius: 2px;
+                }
             }
         }
     }
-}
+
+
+    .thanhtoan{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        span{
+            color: white;
+            background-color: rgba(0, 0, 255, 0.8);
+            padding: 5px;
+            border-radius: 5px;
+            text-align: right;
+        }
+    }

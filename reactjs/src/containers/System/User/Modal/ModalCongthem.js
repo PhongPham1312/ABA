@@ -30,7 +30,7 @@ class Madalcongthem extends Component {
         return donGia * 1000;
     };
 
-    handleAdd = async (e) => {
+    handleAdd = async () => {
         let res = await createCongthem({
             userid: this.props.user.userid,
             ngay: this.props.user.ngay,
@@ -40,11 +40,13 @@ class Madalcongthem extends Component {
         })
         if(res && res.errCode === 0){
             toast.success('thêm thành công ')
-            this.props.onaddcongthem(null, e)
+            this.props.onModalcongthem('')
+            await this.props.getlichbyuser(this.props.user.userid)
+            await this.props.getallcongthembyuser(this.props.user.userid)
         }
         else {
             toast.error('thêm không thành công ')
-            this.props.onaddcongthem(null, e)
+            this.props.onModalcongthem('')
         }
         
     }
@@ -57,7 +59,11 @@ class Madalcongthem extends Component {
         return (
             <div className='modal-congthem'>
                 <div className='modal-congthem-add-container'>
-                        <input name='congthem' onChange={this.handleInputChange} value={this.state.congthem} type='text'/> <div onClick={this.handleAdd} className='them'>thêm</div>                            
+                    <div className='close-congthem'>
+                        <i className="fa-solid fa-circle-xmark" onClick={() => this.props.onModalcongthem('')}></i>
+                    </div>
+                      <div className='congthem'><input onChange={this.handleInputChange} name='congthem' value={this.state.congthem} type='text'/> <span onClick={this.handleAdd}>thêm</span></div>
+
                 </div>
             </div>
         );
