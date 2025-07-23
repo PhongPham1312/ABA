@@ -42,16 +42,15 @@ const updateTrangThaiLich = async (req, res) => {
 // controller
 const xacNhanKetThucTuan = async (req, res) => {
     try {
-        const { userid, dsNgay } = req.body;
-
-        if (!userid || !Array.isArray(dsNgay) || dsNgay.length === 0) {
+        const { userid, dsngay } = req.body;
+        if (!userid || !Array.isArray(dsngay) || dsngay.length === 0) {
             return res.status(400).json({
                 errCode: 1,
                 errMessage: 'Thiếu userid hoặc danh sách ngày'
             });
         }
 
-        const result = await Lich.capNhatEndTuan(userid, dsNgay);
+        const result = await Lich.capNhatEndTuan(userid, dsngay);
 
         return res.status(200).json(result);
     } catch (e) {

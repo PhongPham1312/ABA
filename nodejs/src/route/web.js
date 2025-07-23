@@ -83,7 +83,7 @@ let initWebRoutes = (app) => {
     router.post('/api/create-lich', lichController.createOrUpdateLich);
     router.get('/api/get-lich-by-user', lichController.getLichByUserAndRange);
     router.get('/api/get-lich-by-user-all', lichController.handleGetLichByUser);
-    router.get('/api/xac-nhan-endtuan', lichController.xacNhanKetThucTuan)
+    router.post('/api/xac-nhan-endtuan', lichController.xacNhanKetThucTuan)
     router.post('/api/congthem', congthem.handleCreateCongthem);
     router.get('/api/congthem', congthem.handleGetCongthemByUserAndNgay);
     router.post('/api/update-lich-status', lichController.updateTrangThaiLich);

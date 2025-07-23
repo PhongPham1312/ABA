@@ -4,7 +4,7 @@ import { withRouter } from 'react-router';
 import { getAllPosition, getAllJob } from '../../../../services/userService';
 import { toast } from 'react-toastify';
 import moment from 'moment';
-import { getLichByUser, updateLichStatus } from '../../../../services/lich';
+import { getLichByUser, updateLichStatus, ketthuctuan } from '../../../../services/lich';
 import { getallcongthem , updateStatusAll } from '../../../../services/congthem';
 import ModalCongthem from './ModalCongthem'
 
@@ -19,7 +19,8 @@ class ModalInfo extends Component {
               congThemTheoNgay: [],
               ngayDaXacNhan: [], // lưu danh sách ngày đã xác nhận
               mocongthem: false,
-              xacnhanthanhtoan: false
+              xacnhanthanhtoan: false,
+              ngaythanhtoan:'...'
         }
     }
 
@@ -251,6 +252,33 @@ class ModalInfo extends Component {
         })
     }
 
+    goiXacNhanKetThucTuan = async (userid, danhSachNgay) => {
+        let dsNgay = danhSachNgay.map(item => item.ngay);
+        console.log(dsNgay)
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // tháng từ 0–11
+        const day = String(today.getDate()).padStart(2, '0');
+
+        let ngay = `${day}.${month}`;
+        const res = await ketthuctuan(userid, dsNgay);
+            if (res && res.errCode === 0) {
+                toast.success('Xác nhận kết thúc tuần thành công!');
+                this.setState({
+                    ngaythanhtoan: ngay
+                })
+                await this.getlichbyuser(this.props.user.id)
+                await this.getallcongthembyuser(this.props.user.id);
+                this.thanhtoan()
+
+            } else {
+                toast.error('Xác nhận thất bại!');
+                this.setState({
+                    ngaythanhtoan:'...'
+                })
+            }
+    };
+
+
     render() {
         const cacTuan = this.chiaLichTheoTuan(this.state.lichDaLuu || []);
         return (
@@ -317,8 +345,17 @@ class ModalInfo extends Component {
                                                     </tr>
                                                 ))}
                                                     <tr>
-                                                        <td className='thanhtoan'><div>tổng : ( AS : ... ) </div>{this.state.xacnhanthanhtoan === false && <span onClick={this.thanhtoan}>đã thanh toán</span>}</td>
-                                                        {this.state.xacnhanthanhtoan === true ? 
+                                                        <td className='thanhtoan'><div>tổng : ( AS : { tuan.every(item => item.endtuan === '0') ? this.state.ngaythanhtoan: '...'} ) </div>
+                                                        {/* Nếu tất cả endtuan = '0' và chưa xác nhận thanh toán */}
+
+                                                            {tuan.every(item => item.endtuan === '0') && this.state.xacnhanthanhtoan === false && (
+                                                                <span onClick={() => this.goiXacNhanKetThucTuan(this.props.user?.id, tuan)}>
+                                                                    <span>Đã thanh toán</span>
+                                                                </span>
+                                                            )}
+
+                                                        </td>
+                                                        {tuan.every(item => item.endtuan === '1') ? 
                                                         <td><strong>{this.formatNumberWithSpace(this.tinhTongTienTuan(tuan, this.props?.user?.jobUser?.money))}</strong></td> :
                                                         <td>... </td>    
                                                     }

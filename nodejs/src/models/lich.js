@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     ca4: DataTypes.INTEGER,
     status: DataTypes.INTEGER,
     endtuan: DataTypes.INTEGER,
+    ngaythanhtoan: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'Lich',

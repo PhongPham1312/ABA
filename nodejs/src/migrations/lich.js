@@ -33,6 +33,9 @@ module.exports = {
       endtuan: {
         type: Sequelize.STRING
       },
+      ngaythanhtoan: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
