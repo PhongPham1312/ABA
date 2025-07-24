@@ -10,6 +10,10 @@ const getAllDon = () =>{
     return axios.get('api/get-all-don')
 }
 
+const getGroupByDateService = () =>{
+    return axios.get('api/get-all-don-group')
+}
+
 export {
-createDon , getAllDon
+createDon , getAllDon, getGroupByDateService
 }

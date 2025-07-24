@@ -6,16 +6,12 @@ import UserManage from '../containers/System/User/UserManage';
 import MarkManage from '../containers/System/User/MarkManage';
 import CustomerManage from '../containers/System/User/CustomerManage';
 import Kho from '../containers/System/Kho/Kho'
-import KhoMonth from '../containers/System/Kho/KhoMonth';
-import KhoManage from '../containers/System/Kho/KhoManage'
-import camManage from '../containers/System/Kho/camManage';
-import suathayManage from '../containers/System/Kho/suathayManage';
-import xacManage from '../containers/System/Kho/xacManage';
-import donmay from '../containers/System/Kho/donmay';
 import ThuchiManage from '../containers/System/ThuChi/ThuchiManage';
 import ThuchiAs from '../containers/System/ThuChi/ThuchiAs';
 import ThuchiTM
  from '../containers/System/ThuChi/ThuchiTM';
+
+ import don from '../containers/System/Kho/Don/don';
 
 class System extends Component {
     render() {
@@ -34,16 +30,9 @@ class System extends Component {
 
                         {/* kho */}
                         <Route path="/system/kho-manage" component={Kho} />
+                        <Route path="/system/don/:id" component={don} />
                         
-                        {/* kho tháng */}
-                        <Route path="/system/kho-manage-month/:id" component={KhoMonth} />
-
                         {/* phone , sửa , thay , xác , cầm , DỌN */}
-                        <Route path="/system/kho-phone-mount/:id" component={KhoManage} />
-                        <Route path="/system/kho-cam-mount/:id" component={camManage} />
-                        <Route path="/system/kho-sua-thay-mount/:id" component={suathayManage} />
-                        <Route path="/system/kho-xac-mount/:id" component={xacManage} />
-                        <Route path="/system/kho-don-mount/:id" component={donmay} />
                         <Route path="/system/thuchi" component={ThuchiManage} />
                         <Route path="/system/thuchi-as/:id" component={ThuchiAs} />
                         <Route path="/system/thuchi-tm/:id" component={ThuchiTM} />

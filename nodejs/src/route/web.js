@@ -49,6 +49,7 @@ let initWebRoutes = (app) => {
     // dọn
     router.post('/api/create-don', donController.createDon);
     router.get('/api/get-all-don', donController.getAllDon);
+    router.get('/api/get-all-don-group', donController.getGroupByDateService);
 
     // user
     router.post('/api/create-customer', customerController.addCustomer);

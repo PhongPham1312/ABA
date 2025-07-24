@@ -35,7 +35,7 @@ export const listnamelink  = [
     {name: 'SỬA , THAY THÁNG', link: '/system/kho-sua-thay-mount/:id'},
     {name: 'XÁC THÁNG', link: '/system/kho-xac-mount/:id'},
     {name: 'CẦM THÁNG', link: '/system/kho-cam-mount/:id'},
-    {name: 'DỌN THÁNG', link: '/system/kho-don-mount/:id'},
+    {name: 'DỌN THÁNG', link: '/system/don/:id'},
     {name: 'THU CHI', link: '/system/thuchinam'},
     {name: 'THU CHI THÁNG', link: '/system/thuchithang/:id'},
 

@@ -8,6 +8,7 @@
     .header{
         display: flex;
         justify-content: space-between;
+        align-items: center;
         .input-search{
             flex: 1;
             border: 1px solid gray;
@@ -68,42 +69,136 @@
         padding: 0px 10px;
         position: relative;
 
-      .list-user-item{
-        list-style: none;
-        display: flex;
-        justify-content: space-between;
-        box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-        padding: 10px;
-        font-weight: bold;
-        border-radius: 5px;
-        font-size: 16px;
-        margin-bottom: 5px;
-        position: relative;
-
-        .list-user-item-option{
+        .modal-phone{
+            width: 100%;
             position: absolute;
             top: 0;
+            left: 0;
             right: 0;
-            background-color: white;
             z-index: 1000;
+            display: flex;
+            justify-content: center;
+            .modal-container{
+                width: 98%;
+                box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+                background-color: white;
+                padding: 10px;
+            }
+        }
+
+        .list-user-content{
+            list-style: none;
+            .list-user-info{
+                margin-bottom: 5px;
+                display: flex;
+                span{
+                    margin: 0 10px;
+                    font-weight: bold;
+                }
+                .content-info-item{
+                   font-size: 16px;
+                   font-weight: bold;
+                }
+                img{
+                    width: 25px;
+                    height: 23px;
+                }
+                
+            }
+        }
+        .thumuc {
+            border-bottom: 0.5px solid black;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-user-item{
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            padding: 10px;
+            font-weight: bold;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-bottom: 5px;
+            position: relative;
+
+            .list-user-item-option{
+                position: absolute;
+                top: 0;
+                right: 0;
+                background-color: white;
+                z-index: 1000;
+                margin: 0;
+                padding: 0;
+
+                li{
+                    padding: 5px 10px;
+                    border-radius: 5px;cursor: pointer;
+                    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+
+                    .fa-calendar-days{
+                        color: blue;
+                    }
+
+                    .fa-sack-dollar{
+                        color: yellow;
+                    }
+                }
+            }
+        }
+
+        .list-file-thang{
             margin: 0;
             padding: 0;
 
             li{
                 padding: 5px 10px;
-                border-radius: 5px;cursor: pointer;
-                box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
-
-                .fa-calendar-days{
-                    color: blue;
-                }
-
-                .fa-sack-dollar{
-                    color: yellow;
+                font-size: 16px;
+                i {
+                    color: orange;
+                    font-size: 18px;
+                    margin-right: 5px;
                 }
             }
         }
-      }
+
+        .list-kho-item{
+            list-style: none;
+            font-size: 20px;
+            
+            .list-kho-item-content{
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+
+            i{
+                    font-size: 16px;
+                }
+            }
+
+            .fa-solid.fa-folder{
+                color: yellow;
+                font-size: 25px;
+                margin-right: 5px;
+            }
+        
+            .fa-solid.fa-file-import{
+                color: orange;
+                margin-right: 5px;
+            }
+
+            span{
+                font-size: 16px;
+            }
+
+            .list-kho-thang{
+
+            }
+
+        }
 
         .btn-add-user {
             display: flex;

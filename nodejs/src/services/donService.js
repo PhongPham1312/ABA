@@ -1,7 +1,7 @@
 // services/donService.js
 import db from '../models';
 
-export const createDon = async (data) => {
+const createDon = async (data) => {
   try {
     if (!data.name || !data.ngaymua || !data.nguoiban) {
       return {
@@ -55,7 +55,7 @@ export const createDon = async (data) => {
   }
 };
 
-export const getAllDon = async () => {
+const getAllDon = async () => {
   try {
     const data = await db.Don.findAll({
       order: [['createdAt', 'DESC']],
@@ -75,8 +75,47 @@ export const getAllDon = async () => {
   }
 };
 
+const getGroupByDateService = async () => {
+    try {
+        const allRecords = await db.Don.findAll({
+            raw: true,
+            attributes: ['ngaymua', 'createdAt'],
+        });
+
+        const grouped = {};
+
+        allRecords.forEach(item => {
+            if (!item.createdAt) return;
+
+            // Format createdAt sang yyyy-mm-dd
+            const dateObj = new Date(item.createdAt);
+            const year = dateObj.getFullYear();
+            const month = String(dateObj.getMonth() + 1); // Tháng bắt đầu từ 0
+            const day = String(dateObj.getDate()).padStart(2, '0');
+
+            if (!grouped[year]) grouped[year] = {};
+            if (!grouped[year][month]) grouped[year][month] = {};
+            if (!grouped[year][month][day]) grouped[year][month][day] = [];
+
+            grouped[year][month][day].push(item);
+        });
+
+        return {
+            errCode: 0,
+            data: grouped
+        };
+
+    } catch (e) {
+        console.error(e);
+        return {
+            errCode: 1,
+            errMessage: 'Lỗi server khi group theo ngày'
+        };
+    }
+};
 
 module.exports = {
     createDon: createDon,
-    getAllDon: getAllDon
+    getAllDon: getAllDon,
+    getGroupByDateService: getGroupByDateService
 }
