@@ -1,6 +1,7 @@
 import db from '../models/index';
 import bcrypt from 'bcryptjs';
 
+const { Op } = require('sequelize');
 
 const hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(10);
@@ -248,6 +249,45 @@ const getAllMark = async () => {
   }
 };
 
+const searchUserByNameOrPhone = (keyword) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            if (!keyword) {
+                return reject(new Error('Missing search keyword'));
+            }
+
+            const users = await db.User.findAll({
+                where: {
+                    [Op.or]: [
+                        { name: { [Op.like]: `%${keyword.trim()}%` } },
+                        { phone: { [Op.like]: `%${keyword.trim()}%` } }
+                    ]
+                },
+                attributes: { exclude: ['password'] }, // ❌ Không trả về password
+                include: [
+                    {
+                        model: db.Position,
+                        as: 'positionUser',
+                        attributes: ['id', 'name'] // lấy thêm cả id, name và money nếu cần
+                    },
+                    {
+                        model: db.Job,
+                        as: 'jobUser',
+                        attributes: ['id', 'name', 'money'] // lấy thêm cả id, name và money nếu cần
+                    }
+                ]
+                });
+            resolve({
+                errCode: 0,
+                message: 'Lấy danh sách thành công',
+                data :users
+            });
+        } catch (err) {
+            reject(err);
+        }
+    });
+};
+
 
 
 module.exports = {
@@ -255,5 +295,6 @@ module.exports = {
     createUserService: createUserService,
     getAllUser: getAllUser,
     deleteUser: deleteUser, createMark,
-    getAllMark
+    getAllMark,
+    searchUserByNameOrPhone: searchUserByNameOrPhone
 }

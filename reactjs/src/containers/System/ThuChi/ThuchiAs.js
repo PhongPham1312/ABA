@@ -78,6 +78,21 @@ class ThuChiAs extends Component {
         })
     }
 
+    formatGioPhutGiay(dateString) {
+        try {
+            if (!dateString || typeof dateString !== 'string') return '';
+            const parts = dateString.split(' ');
+            if (parts.length !== 2) return '';
+            const time = parts[1]; // "05:15:04"
+            const [h, m, s] = time.split(':');
+            if (!h || !m || !s) return '';
+            return `${h}.${m}.${s}`;
+        } catch (err) {
+            console.error('Lỗi formatGioPhutGiay:', err);
+            return '';
+        }
+    }
+
     
     render() {
         let {listAS} = this.state
@@ -99,7 +114,7 @@ class ThuChiAs extends Component {
                                 <h5 className='mt-3'>{day}.{this.props.match?.params?.id}</h5>
                                 <ul className='list-as-li'>
                                 {items.map(item => (
-                                    <li className='list-as-item' key={item.id}>
+                                    <li className='list-as-item' key={item.id} id={`${item.ngay}-${item.content}`}>
                                         <div className='table'>{this.formatNumber(item.money)}</div>
                                         <div className='table'>{item.content}</div>
                                     </li>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import './UserManage.scss'
 import {listnamelink} from '../../../utils/constant'
-import { getAllUser } from '../../../services/userService';
+import { getAllUser, searchUser } from '../../../services/userService';
 import { isEmpty } from 'lodash';
 import ModalUser from './Modal/ModalUser';
 import ModalLenLich from './Modal/ModalLenLich';
@@ -20,7 +20,8 @@ class UserManage extends Component {
             user:'',
             onOption: false,
             onLenLich: false,
-            onModalInfo: false
+            onModalInfo: false,
+            inputsearch: ''
         };
         this.optionRef = React.createRef(); // <- ref cho option
     }
@@ -49,6 +50,18 @@ class UserManage extends Component {
         if(res && res?.errCode === 0){
             this.setState({
                 listUser: res.data
+            })
+        }
+        else this.setState({
+            listUser: []
+        })
+    }
+
+    getalluserbykey = async (keyword) => {
+        let res = await searchUser(keyword)
+         if(res && res.users.errCode === 0){
+            this.setState({
+                listUser: res.users.data
             })
         }
         else this.setState({
@@ -104,11 +117,25 @@ class UserManage extends Component {
     }
 
     // xử lý nhập
-    handleInputChange = (e) => {
+    handleOnchangeInput = async (e) => {
+        const { name, value } = e.target;
+
         this.setState({
-            [e.target.name]: e.target.value
+            [name]: value
+        }, async () => {
+            // Nếu name là inputsearch thì xử lý
+            if (name === 'inputsearch') {
+                if (value && value.trim() !== '') {
+                    await this.getalluserbykey(value);
+                } else {
+                    await this.getalluser();
+                }
+            }
         });
-    }
+
+    };
+
+
 
     onmodaluser = (type) => {
         this.setState({
@@ -161,6 +188,16 @@ class UserManage extends Component {
                     {/*  */}
                     <div className='m-2 header'>
                         <span><i class="fa-solid fa-arrow-left" onClick={() => this.gotolink('home')}></i> {this.state.linkName}</span>
+                        <div className='input-search'>
+                                <input
+                                    type='text'
+                                    value={this.state.inputsearch}
+                                    name='inputsearch'  // <-- sửa chỗ này
+                                    onChange={(e) => this.handleOnchangeInput(e)} 
+                                    placeholder='nhập để tìm kiếm ...'
+                                />
+
+                        </div>
                         <button className="btn-add-user" onClick={() => this.onmodaluser('THÊM NHÂN SỰ')}>
                             <i className="fas fa-plus"></i>
                         </button>

@@ -7,6 +7,9 @@ import moment from 'moment';
 import { getLichByUser, updateLichStatus, ketthuctuan } from '../../../../services/lich';
 import { getallcongthem , updateStatusAll } from '../../../../services/congthem';
 import ModalCongthem from './ModalCongthem'
+import { createAS } from '../../../../services/sacombank';
+import { createTM } from '../../../../services/userService';
+import CommonUtils from '../../../../utils/CommonUtils';
 
 class ModalInfo extends Component {
     constructor(props){
@@ -20,14 +23,23 @@ class ModalInfo extends Component {
               ngayDaXacNhan: [], // lưu danh sách ngày đã xác nhận
               mocongthem: false,
               xacnhanthanhtoan: false,
-              ngaythanhtoan:'...'
+              ngaythanhtoan:'...',
+              selectListThuChi: {}, // lưu theo dạng { 0: 'TM', 1: 'AS' }
+              thang: ''
         }
     }
 
     async componentDidMount() {
+        this.setState({
+            thang: CommonUtils.getCurrentMonth()
+        })
         await this.getlichbyuser(this.props.user.id)
         await this.getallcongthembyuser(this.props.user.id);
         /* this.mergeCongThem(); */
+        this.setState({
+            selectlistthuchi: "AS" // mặc định là "TM"
+        })
+        
     }
 
     tinhTongTienNgay = (item, money) => {
@@ -43,21 +55,6 @@ class ModalInfo extends Component {
     };
 
 
-
-   /*  mergeCongThem = () => {
-        const { lichTheoTuan, congThemTheoNgay } = this.state;
-
-        const lichMoi = lichTheoTuan.map((ngay) => {
-            const cong = congThemTheoNgay.find((c) => c.ngay === ngay.ngay);
-            return {
-            ...ngay,
-            congthem: cong ? cong.congthem : null
-            };
-        });
-
-        this.setState({ lichTheoTuan: lichMoi });
-        }; */
-
     getallcongthembyuser = async (id) => {
         let res = await getallcongthem(id)
         if (res && res.errCode === 0) {
@@ -67,7 +64,7 @@ class ModalInfo extends Component {
         }
     }
     
-     gotolink = (link) =>
+     gotolink = (link) =>     
     {
         if ( this.props.history )
         {
@@ -112,7 +109,6 @@ class ModalInfo extends Component {
 
 
     getlichbyuser = async (id) => {
-        console.log(id)
         let res = await getLichByUser(id);
         if(res && res.errCode === 0){
             this.setState({ lichDaLuu: res.data });
@@ -228,7 +224,6 @@ class ModalInfo extends Component {
 
     tinhTongTienTuan = (tuan, money) => {
         return tuan.reduce((tong, item) => {
-            console.log(money)
             let tien = 0;
 
             // Tính tiền các ca
@@ -252,15 +247,14 @@ class ModalInfo extends Component {
         })
     }
 
-    goiXacNhanKetThucTuan = async (userid, danhSachNgay) => {
+    goiXacNhanKetThucTuan = async (userid, danhSachNgay, thuchi, money) => {
         let dsNgay = danhSachNgay.map(item => item.ngay);
-        console.log(dsNgay)
         const today = new Date();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // tháng từ 0–11
-        const day = String(today.getDate()).padStart(2, '0');
-
+        const month = today.getMonth() + 1; // Không dùng padStart
+        const day = today.getDate();        // Không dùng padStart
+        const year = today.getFullYear();
         let ngay = `${day}.${month}`;
-        const res = await ketthuctuan(userid, dsNgay);
+        const res = await ketthuctuan(userid, dsNgay, ngay, thuchi);
             if (res && res.errCode === 0) {
                 toast.success('Xác nhận kết thúc tuần thành công!');
                 this.setState({
@@ -268,7 +262,21 @@ class ModalInfo extends Component {
                 })
                 await this.getlichbyuser(this.props.user.id)
                 await this.getallcongthembyuser(this.props.user.id);
-                this.thanhtoan()
+                if(thuchi === "AS"){
+                    await createAS({
+                        content: `lương ${this.vietTatChucVu(this.props.user.positionUser.name)}${this.props.user.name} _ ${this.formatPhone(this.props.user.phone)}`,
+                        money: `-${money}`,
+                        ngay: `${day}.${month}.${year}`,
+                    })
+                }
+
+                if(thuchi === "TM"){
+                    await createAS({
+                        content: `lương ${this.vietTatChucVu(this.props.user.positionUser.name)}${this.props.user.name} _ ${this.formatPhone(this.props.user.phone)}`,
+                        money: `-${money}`,
+                        ngay: `${day}.${month}.${year}`,
+                    })
+                }
 
             } else {
                 toast.error('Xác nhận thất bại!');
@@ -278,6 +286,39 @@ class ModalInfo extends Component {
             }
     };
 
+
+    formatNgay = (chuoi) => {
+        if (!chuoi) return '';
+        const [ngay, thang] = chuoi.split('.');
+        const ngaySo = parseInt(ngay, 10);
+        const thangSo = parseInt(thang, 10);
+        return `${ngaySo}.${thangSo}`;
+    };
+
+    getngaythangnam = () => {
+        const today = new Date();
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // tháng từ 0–11
+        const day = String(today.getDate()).padStart(2, '0');
+        const year = today.getFullYear();
+        return `${day}.${month}.${year}`
+    }
+
+    handleInputChangeThuChi = (index, value) => {
+        this.setState(prevState => ({
+            selectListThuChi: {
+                ...prevState.selectListThuChi,
+                [index]: value
+            }
+        }));
+
+    };
+
+    gopnam =(full, nofull) =>{
+    // Tách năm từ fullDate
+    const year = new Date(full).getFullYear(); // => 2025
+    // Ghép lại
+    return`${nofull}.${year}`;
+    }
 
     render() {
         const cacTuan = this.chiaLichTheoTuan(this.state.lichDaLuu || []);
@@ -344,18 +385,34 @@ class ModalInfo extends Component {
                                                         </td>
                                                     </tr>
                                                 ))}
+                                                {/* `thuchi-as/${parseInt(tuan[0]?.ngaythanhtoan.split('.')[1], 10)}#${this.gopnam(tuan[0]?.ngay,tuan[0]?.ngaythanhtoan)}-lương ${this.vietTatChucVu(this.props.user.positionUser.name)} _ ${this.props.user.name} _ ${this.formatPhone(this.props.user.phone)}` */}
                                                     <tr>
-                                                        <td className='thanhtoan'><div>tổng : ( AS : { tuan.every(item => item.endtuan === '0') ? this.state.ngaythanhtoan: '...'} ) </div>
+                                                        <td className='thanhtoan'><div>tổng : (
+                                                            <span className='linktothuchi divclass'>
+                                                                <input type='text' value={this.state.selectListThuChi?.[index] ?? 'AS'  } 
+                                                                name='selectlistthuchi'
+                                                                placeholder="TM / AS"
+                                                                maxLength={2}
+                                                                onChange={(e) => this.handleInputChangeThuChi(index, e.target.value)}
+                                                            />
+                                                            </span>
+                                                        : { tuan.every(item => item.endtuan === '1') ? <span onClick={() => 
+                                                            this.gotolink(`thuchi-as/${parseInt(tuan[0]?.ngaythanhtoan.split('.')[1], 10)}#${this.gopnam(tuan[0]?.ngay,tuan[0]?.ngaythanhtoan)}-lương ${this.vietTatChucVu(this.props.user.positionUser.name)}${this.props.user.name} _ ${this.formatPhone(this.props.user.phone)}`)} 
+                                                            className='divclass'>{this.formatNgay((tuan[0]?.ngaythanhtoan))}
+                                                            </span> : <span className='divclass'>...</span> } ) </div>
                                                         {/* Nếu tất cả endtuan = '0' và chưa xác nhận thanh toán */}
 
-                                                            {tuan.every(item => item.endtuan === '0') && this.state.xacnhanthanhtoan === false && (
-                                                                <span onClick={() => this.goiXacNhanKetThucTuan(this.props.user?.id, tuan)}>
+                                                            {tuan.every(item => item.endtuan === '0') && (
+                                                                <b onClick={() =>{
+                                                                    const value = this.state.selectListThuChi?.[index] ?? 'AS'; // fallback nếu chưa nhập gì
+                                                                     this.goiXacNhanKetThucTuan(this.props.user?.id, tuan, value, this.tinhTongTienTuan(tuan, this.props?.user?.jobUser?.money))
+                                                                }}>
                                                                     <span>Đã thanh toán</span>
-                                                                </span>
+                                                                </b>
                                                             )}
 
                                                         </td>
-                                                        {tuan.every(item => item.endtuan === '1') ? 
+                                                        {tuan.every(item => item.endtuan === '1' || new Date().getDay() === 4)  ? 
                                                         <td><strong>{this.formatNumberWithSpace(this.tinhTongTienTuan(tuan, this.props?.user?.jobUser?.money))}</strong></td> :
                                                         <td>... </td>    
                                                     }

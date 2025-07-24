@@ -127,10 +127,13 @@ const updateTrangThaiLich = async (userid, ngay) => {
     }
 };
 
-const capNhatEndTuan = async (userid, dsNgay) => {
+const capNhatEndTuan = async (userid, dsNgay, ngay, thuchi) => {
     try {
         await db.Lich.update(
-            { endtuan: 1 },
+            { endtuan: 1,
+              ngaythanhtoan: ngay,
+              thuchi
+             },
             {
                 where: {
                     userid: userid,

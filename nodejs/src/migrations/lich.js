@@ -36,6 +36,9 @@ module.exports = {
       ngaythanhtoan: {
         type: Sequelize.STRING
       },
+      thuchi: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

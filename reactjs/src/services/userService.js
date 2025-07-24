@@ -66,6 +66,12 @@ const getAllUser = () =>{
     return axios.get('api/get-all-user')
 }
 
+const searchUser = (keyword) =>{
+    return axios.get('api/get-all-user-key', {
+        params: { keyword: keyword } // ⛔ Đây chỉ đúng với GET request
+    })
+}
+
 const deleteUser = (userId) =>{
     return axios.delete('api/delete-user', {
         data: { id: userId }
@@ -119,5 +125,5 @@ export { handleLoginApi, getAllPosition ,
     createMay ,addCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
     deleteLinhkiendon, createTM, getTMByMonthGrouped ,
-    getSacombankByMonthGrouped , deleteAS ,deleteTM
+    getSacombankByMonthGrouped , deleteAS ,deleteTM, searchUser
 };

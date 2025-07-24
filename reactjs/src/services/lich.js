@@ -26,8 +26,8 @@ const getLichByUser = (userId) => {
  const updateLichStatus = (userid, ngay) => {
     return axios.post('/api/update-lich-status', { userid, ngay });
 };
-const ketthuctuan = (userid, dsngay) => {
-    return axios.post('/api/xac-nhan-endtuan', { userid, dsngay });
+const ketthuctuan = (userid, dsngay, ngay, thuchi) => {
+    return axios.post('/api/xac-nhan-endtuan', { userid, dsngay, ngay, thuchi });
 };
 export {
 createOrUpdateLich, getlichbyuser, getLichByUserAndRange,

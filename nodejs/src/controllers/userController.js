@@ -68,6 +68,16 @@ const getAllMark = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const searchUser = async (req, res) => {
+    const keyword = req.query.keyword;
+    try {
+        const users = await userService.searchUserByNameOrPhone(keyword);
+        return res.status(200).json({users});
+    } catch (error) {
+        return res.status(400).json({ message: error.message });
+    }
+};
+
 
 module.exports = {
     handleLoging: handleLoging,
@@ -75,5 +85,6 @@ module.exports = {
     getAllUser: getAllUser,
     deleteUser: deleteUser,
     getAllMark : getAllMark,
-    addMark: addMark
+    addMark: addMark,
+    searchUser: searchUser
 }
