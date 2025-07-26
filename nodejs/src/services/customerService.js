@@ -27,7 +27,8 @@ export const createCustomer = async (data) => {
       zalo: data.zalo || '',
       image_t: data.image_t || '',
       image_s: data.image_s || '',
-      address: data.address || ''
+      address: data.address || '',
+      type: data.type
     });
 
     return {

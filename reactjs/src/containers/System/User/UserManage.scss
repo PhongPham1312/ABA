@@ -83,6 +83,88 @@
                 box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
                 background-color: white;
                 padding: 10px;
+                border-radius: 5px;
+
+                .close{
+                    display: flex;
+                    justify-content: right;
+                    color: red;
+                }
+                .header{
+                    display: flex;
+                    justify-content: center;
+                    font-size: 20px;
+                    font-weight: bold;
+                }
+
+                .btn{
+                    display: flex;
+                    justify-content: center;
+                    margin: 10px;
+
+                    button {
+                        background-color: rgba(0, 0, 255, 0.8);
+                        padding: 5px;
+                        color: white;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        border-radius: 5px;
+                    }
+                }
+                 .form-content-item{
+                        margin-top: 10px;
+                         .css-1wy0on6{
+                            display: none;
+                        }
+
+                        label {
+                            display: block;
+                        }
+
+                        input {
+                            border: 1px solid gray;
+                            border-radius: 3px;
+                             padding: 7px 5px;
+                             width: 100%;
+                        }
+
+                        
+                 }
+
+                .form-content{
+                    display: flex;
+                    justify-content: space-between;
+
+                    .form-content-item{
+                        margin-top: 10px;
+
+                        .css-1wy0on6{
+                            display: none;
+                        }
+
+                        padding: 0 5px;
+                        input {
+                            width: 40px;
+                            border: 1px solid gray;
+                            padding: 7px 5px;
+                            border-radius: 3px;
+                        }
+
+                        .input-gia{
+                            width: 100%;
+                        }
+
+                        label {
+                            display: block;
+                        }
+                        
+                        &.form-content-item1{
+                            flex: 2;
+
+                        }
+                    }
+                }
             }
         }
 

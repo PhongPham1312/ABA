@@ -14,6 +14,11 @@ const getAllMay = () =>{
     return axios.get('api/get-all-by-ngay')
 }
 
+// get position
+const getAllLoaiMay = () =>{
+    return axios.get('api/get-all-may')
+}
+
 
 // get position
 const getAllCustomer = () =>{
@@ -54,7 +59,7 @@ const addMark = (data) => {
     return axios.post(`/api/create-mark`, data);
 }
 
-const addCustomer = (data) => {
+const createCustomer = (data) => {
     return axios.post(`/api/create-customer`, data);
 }
 const createlinhkiendon = (data) => {
@@ -121,8 +126,8 @@ const deleteTM = (donId) => {
 
 export { handleLoginApi, getAllPosition , 
     createUser , getAllUser , deleteUser, 
-    getAllJob ,getAllCustomer ,getAllMay,
-    createMay ,addCustomer, createDon, getAllMark, addMark,
+    getAllJob ,getAllCustomer ,getAllMay,getAllLoaiMay,
+    createMay ,createCustomer, createDon, getAllMark, addMark,
     createlinhkiendon, getAlllinhkiendon, getLinhkienByDonmay,
     deleteLinhkiendon, createTM, getTMByMonthGrouped ,
     getSacombankByMonthGrouped , deleteAS ,deleteTM, searchUser

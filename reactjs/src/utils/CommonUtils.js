@@ -48,7 +48,15 @@ class CommonUtils {
         // Thêm dấu "+" hoặc "-"
         return (num < 0 ? '- ' : '+ ') + formatted;
     };
-                                                     
+     
+    static rutGonNgay = (chuoiNgay) => {
+        if (!chuoiNgay) return '';
+        const parts = chuoiNgay.split('.');
+        if (parts.length !== 3) return chuoiNgay; // nếu không đúng định dạng thì trả nguyên
+
+        const [ngay, thang] = parts;
+        return `${ngay}.${thang}`;
+    };
 
 
 }

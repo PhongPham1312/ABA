@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import Select from 'react-select';
 import { getAllPosition, getAllJob } from '../../../../services/userService';
 import { toast } from 'react-toastify';
 import moment from 'moment';
